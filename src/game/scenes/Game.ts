@@ -32,11 +32,6 @@ export class Game extends Scene
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
 
         let star = this.physics.add.staticImage(400, 300, 'star')
-        
-        this.physics.add.overlap(this.#player, star, function(){
-            console.log("o")
-            //star.disableBody()
-        });
 
         this.#platforms = this.physics.add.staticGroup();
 
@@ -49,6 +44,10 @@ export class Game extends Scene
         //different way of defining private variables. no this.player, however variable is scoped to create(){}
         this.#player = this.physics.add.sprite(100, 450, 'dude');
 
+        this.physics.add.overlap(this.#player, star, function(){
+            console.log("o")
+            star.destroy(true)
+        });
         //player physics
         this.#player.setBounce(0.2);
         this.#player.setCollideWorldBounds(true);
