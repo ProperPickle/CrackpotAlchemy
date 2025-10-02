@@ -24,7 +24,13 @@ export class MainMenu extends Scene
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-
+            let FULLSCREEN = false
+            if(FULLSCREEN)
+                if (this.scale.isFullscreen) {
+                    this.scale.stopFullscreen();
+                } else {
+                    this.scale.startFullscreen();
+                }
             this.scene.start('Game');
 
         });
