@@ -31,11 +31,11 @@ export class Game extends Scene
         // stretch asset
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
 
-        let star = this.add.image(400, 300, 'star');
-        let stars = this.physics.add.group({
-            key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+        let star = this.physics.add.staticImage(400, 300, 'star')
+        
+        this.physics.add.overlap(this.#player, star, function(){
+            console.log("o")
+            //star.disableBody()
         });
 
         this.#platforms = this.physics.add.staticGroup();
@@ -75,31 +75,6 @@ export class Game extends Scene
             frameRate: 10,
             repeat: -1
         });
-
-
-        // this.physics.add.overlap(this.#player, stars, function(player, star){
-        //     star?.disableBody(false)
-        //     console.log("destroying")
-        // });
-
-        // this.camera = this.cameras.main;
-        // this.camera.setBackgroundColor(0x00ff00);
-
-        // this.background = this.add.image(512, 384, 'background');
-        // this.background.setAlpha(0.5);
-
-        // this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
-        //     fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-        //     stroke: 'n#000000', strokeThickness: 8,
-        //     align: 'center'
-        // });
-        // this.msg_text.setOrigin(0.5);
-
-        // this.input.once('pointerdown', () => {
-
-        //     this.scene.start('GameOver');
-
-        // });
         
     }
 
