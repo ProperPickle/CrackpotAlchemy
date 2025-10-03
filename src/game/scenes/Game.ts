@@ -1,13 +1,11 @@
 import { Scene } from 'phaser';
-
 export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
 
-    constructor ()
-    {
+    constructor (){
         super('Game');
     }
 
@@ -45,7 +43,6 @@ export class Game extends Scene
         this.#player = this.physics.add.sprite(100, 450, 'dude');
 
         this.physics.add.overlap(this.#player, star, function(){
-            console.log("o")
             star.destroy(true)
         });
         //player physics
