@@ -22,7 +22,7 @@ export class Game extends Scene
 
     //private field 
     #platforms:Phaser.Physics.Arcade.StaticGroup;
-    #player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+    player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     create (){
         // loaded via public/assets
         let bg = this.add.image(0, 0, 'sky').setOrigin(0, 0)
@@ -40,16 +40,16 @@ export class Game extends Scene
         this.#platforms.create(750, 220, 'ground');
 
         //different way of defining private variables. no this.player, however variable is scoped to create(){}
-        this.#player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(100, 450, 'dude');
 
-        this.physics.add.overlap(this.#player, star, function(){
+        this.physics.add.overlap(this.player, star, function(){
             star.destroy(true)
         });
         //player physics
-        this.#player.setBounce(0.2);
-        this.#player.setCollideWorldBounds(true);
-        this.#player.setGravityY(400);
-        this.physics.add.collider(this.#player, this.#platforms);
+        this.player.setBounce(0.2);
+        this.player.setCollideWorldBounds(true);
+        this.player.setGravityY(400);
+        this.physics.add.collider(this.player, this.#platforms);
 
         //animations for player
         this.anims.create({
@@ -83,23 +83,23 @@ export class Game extends Scene
             throw new Error("no keyboard")
         
         if (cursors.left.isDown){
-            this.#player.setVelocityX(-160);
+            this.player.setVelocityX(-160);
 
-            this.#player.anims.play('left', true);
+            this.player.anims.play('left', true);
         }
         else if (cursors.right.isDown){
-            this.#player.setVelocityX(160);
+            this.player.setVelocityX(160);
 
-            this.#player.anims.play('right', true);
+            this.player.anims.play('right', true);
         }
         else{
-            this.#player.setVelocityX(0);
+            this.player.setVelocityX(0);
 
-            this.#player.anims.play('turn');
+            this.player.anims.play('turn');
         }
 
-        if (cursors.up.isDown && this.#player.body.touching.down){
-            this.#player.setVelocityY(-550);
+        if (cursors.up.isDown && this.player.body.touching.down){
+            this.player.setVelocityY(-550);
         }
     }
 }
