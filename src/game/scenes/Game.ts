@@ -5,6 +5,11 @@ export class Game extends Scene
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
 
+    isDragging: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+    isDropped: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+
+    items: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+
     constructor (){
         super('Game');
     }
@@ -21,7 +26,7 @@ export class Game extends Scene
     }
 
     //private field 
-    #platforms:Phaser.Physics.Arcade.StaticGroup;
+    //#platforms:Phaser.Physics.Arcade.StaticGroup;
     player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     create (){
         // loaded via public/assets
@@ -29,27 +34,24 @@ export class Game extends Scene
         // stretch asset
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
 
-        let star = this.physics.add.staticImage(400, 300, 'star')
-
-        this.#platforms = this.physics.add.staticGroup();
-
-        this.#platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-        this.#platforms.create(600, 400, 'ground');
-        this.#platforms.create(50, 250, 'ground');
-        this.#platforms.create(750, 220, 'ground');
+        //let star = this.physics.add.staticImage(400, 300, 'star')
 
         //different way of defining private variables. no this.player, however variable is scoped to create(){}
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(450, 450, 'dude');
+        this.player.scale *= 2
+        this.player.setMaxVelocity(3000)
 
+        /*
         this.physics.add.overlap(this.player, star, function(){
             star.destroy(true)
         });
+        */
         //player physics
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
-        this.player.setGravityY(400);
-        this.physics.add.collider(this.player, this.#platforms);
+        this.player.setGravityY(0);
+        //this.physics.add.collider(this.player, this.#platforms);
+
 
         //animations for player
         this.anims.create({
@@ -71,35 +73,90 @@ export class Game extends Scene
             frameRate: 10,
             repeat: -1
         });
+
+        this.player.anims.play('turn');
+
+        this.items.push(this.player)
         
     }
 
-    update(){
-        let keyboard = this.input.keyboard
-        let cursors;
-        if(keyboard!= null)
-            cursors = keyboard.createCursorKeys();
-        else
-            throw new Error("no keyboard")
+    update() {
+        const mouse = this.input.mousePointer;
+        if (!mouse) return;
+
+        if (mouse.primaryDown) {
+            for (let item of this.items) {
+                if (item.getBounds().contains(mouse.x, mouse.y)) {
+                    if (!this.isDragging.includes(this.player)) {
+                        this.isDragging.push(this.player)
+                        if (this.isDropped.includes(this.player)) {
+                            this.isDropped.splice(this.isDropped.indexOf(this.player), 1)
+                        }
+                    }
+                }
+            }
+        } else {
+            this.isDragging.forEach(element => {
+                this.isDropped.push(element)
+            });
+            this.isDragging = []
+        }
         
-        if (cursors.left.isDown){
-            this.player.setVelocityX(-160);
 
-            this.player.anims.play('left', true);
-        }
-        else if (cursors.right.isDown){
-            this.player.setVelocityX(160);
+        for (let object of this.isDragging) {
 
-            this.player.anims.play('right', true);
-        }
-        else{
-            this.player.setVelocityX(0);
+            const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
+            const maxRadius = 200; // max distance from center
 
-            this.player.anims.play('turn');
+            let target = new Phaser.Math.Vector2(mouse.x, mouse.y);
+
+            // Vector from center → mouse
+            let offset = target.clone().subtract(center);
+
+            // Clamp length
+            if (offset.length() > maxRadius) {
+                offset = offset.normalize().scale(maxRadius);
+            }
+
+            // Final clamped position
+            const clampedPos = center.clone().add(offset);
+            let toTarget = clampedPos.clone().subtract(this.player.getCenter());
+
+             // Desired velocity toward target
+            const maxSpeed = 3000;
+            const distance = toTarget.length();
+            const speed = Math.min(distance * 10, maxSpeed); // scale speed by distance
+            let desiredVelocity = toTarget.clone().normalize().scale(speed);
+
+            // Then interpolate as before
+            const k = 0.3; 
+            object.body.velocity.x += (desiredVelocity.x - object.body.velocity.x) * k;
+            object.body.velocity.y += (desiredVelocity.y - object.body.velocity.y) * k;
+
         }
 
-        if (cursors.up.isDown && this.player.body.touching.down){
-            this.player.setVelocityY(-550);
+        for (let i = this.isDropped.length - 1; i >= 0; i--) {
+            const object = this.isDropped[i];
+
+            // apply drag
+            const k = 0.1;
+            object.body.velocity.x -= object.body.velocity.x * k;
+            object.body.velocity.y -= object.body.velocity.y * k;
+
+            if (object.body.speed < 10) {
+                this.isDropped.splice(i, 1); // safe to remove while iterating backwards
+                object.body.setVelocity(0)
+            }
         }
+
+
+        
+    }
+
+    clickWithinRadius(sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, radius: number) {
+        return sprite.scene.input.mousePointer.position.distance(
+            new Phaser.Math.Vector2(sprite.x, sprite.y))
+            <= radius
+
     }
 }
