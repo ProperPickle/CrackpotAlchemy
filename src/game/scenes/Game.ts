@@ -43,29 +43,9 @@ export class Game extends Scene
         const tileset = myMap.addTilesetImage('fucked_up_chungus_world', 'tiles');
         // stretch asset
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
-        let camera = this.cameras.main;
+        this.camera = this.cameras.main;
 
-        // Defining the item
-        this.item = this.physics.add.sprite(450, 450, 'dude');
-        this.item.scale *= 2
-
-        this.item.setBounce(0.2);
-        this.item.setCollideWorldBounds(true);
-
-        this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
-        });
-
-        this.item.anims.play('turn');
-
-        this.items.push(this.item)
-
-        // Defining the item2
-        this.item2 = this.physics.add.sprite(600, 450, 'dude');
-        this.item2.scale *= 2
-        let star = this.physics.add.staticImage(400, 300, 'star');
+        //let star = this.physics.add.staticImage(400, 300, 'star');
         if (!tileset) {
             throw new Error("Tileset 'map' with image key 'tiles' not found.");
         }
@@ -80,39 +60,48 @@ export class Game extends Scene
         //different way of defining private variables. no this.player, however variable is scoped to create(){}
         this.player = this.physics.add.sprite(100, 450, 'dude');
 
+        /*
         this.physics.add.overlap(this.player, star, function(){
             star.destroy(true)
         });
-        camera.startFollow(this.player, true, 0.5, 0.5);
+        */
+
+        this.camera.startFollow(this.player, true, 0.5, 0.5);
         //player physics
         this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(false);
+        this.player.setCollideWorldBounds(true);
         // platforms is definitely non-null here because of the guard above
         this.physics.add.collider(this.player, this.#platforms as Phaser.Tilemaps.TilemapLayer);
+
+
+        // Defining the item
+        this.item = this.physics.add.sprite(20, 450, 'dude');
+        this.item.scale *= 2
+
+        this.item.setBounce(0.2);
+        this.item.setCollideWorldBounds(true);
+
+        this.items.push(this.item)
+
+        // Defining the item2
+        this.item2 = this.physics.add.sprite(50, 450, 'dude');
+        this.item2.scale *= 2
 
         this.item2.setBounce(0.2);
         this.item2.setCollideWorldBounds(true);
 
-        this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
-        });
-
-        this.item2.anims.play('turn');
-
         this.items.push(this.item2)
+
+        this.physics.world.setBounds(0, 0, myMap.widthInPixels, myMap.heightInPixels);
+
+        this.physics.add.collider(this.items, this.#platforms as Phaser.Tilemaps.TilemapLayer);
+
     }
 
     update() {
         const mouse = this.input.mousePointer;
         if (!mouse) return;
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
+
         // Function for finding tile indices (blows the console the fuck up).
         /*
         this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
@@ -127,9 +116,7 @@ export class Game extends Scene
         }
         });
         */
-    }
-
-    update(){
+    
         let keyboard = this.input.keyboard
         let cursors;
         if(keyboard!= null)
@@ -139,19 +126,27 @@ export class Game extends Scene
         
         if (cursors.left.isDown&&!cursors.right.isDown){
             this.player.setVelocityX(-160);
+        } else if (cursors.right.isDown&&!cursors.left.isDown){
+            this.player.setVelocityX(160);
+        } else if (cursors.up.isDown&&!cursors.down.isDown){
+            this.player.setVelocityY(-160);
+        } else if (cursors.down.isDown&&!cursors.up.isDown){
+            this.player.setVelocityY(160);
+        } else {
+            this.player.setVelocity(0);
+        }
 
-        const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
+        //const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
+        const center = this.player.body.position
         const maxRadius = 200;
 
-        let mousePos = new Phaser.Math.Vector2(mouse.x, mouse.y);
+        let mousePos = new Phaser.Math.Vector2(mouse.worldX, mouse.worldY);
 
         let mouseToPlayer = mousePos.clone().subtract(center);
 
         if (mouseToPlayer.length() > maxRadius) {
             mouseToPlayer = mouseToPlayer.normalize().scale(maxRadius);
         }
-        else if (cursors.right.isDown&&!cursors.left.isDown){
-            this.player.setVelocityX(160);
 
         const clampedMousePos = center.clone().add(mouseToPlayer);
 
@@ -209,13 +204,6 @@ export class Game extends Scene
             }
         }
           
-        if (cursors.up.isDown&&!cursors.down.isDown){
-            this.player.setVelocityY(-160);
-        } else if (cursors.down.isDown&&!cursors.up.isDown){
-            this.player.setVelocityY(160);
-        } else{
-            this.player.setVelocityY(0);
-        }
     }
 
     repelObjects(objects: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[], repulsionRadius: number, strength: number) {
@@ -227,7 +215,16 @@ export class Game extends Scene
             const delta = a.body.position.clone().subtract(b.body.position);
             const distance = delta.length();
 
-            if (distance === 0) continue;
+            if (distance === 0) {
+                const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2)
+
+                // apply equal and opposite velocity changes
+                a.body.velocity.add(force);
+                b.body.velocity.subtract(force);
+
+                if (!this.isDragging.includes(a)) this.isThrown.push(a)
+                if (!this.isDragging.includes(b)) this.isThrown.push(b)
+            };
 
             if (distance < repulsionRadius) {
                 const force = delta.normalize().scale((repulsionRadius - distance) * strength);
@@ -242,5 +239,5 @@ export class Game extends Scene
     
     }
 }
-
+    }
 }
