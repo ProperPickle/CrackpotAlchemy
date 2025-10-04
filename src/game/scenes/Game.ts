@@ -76,7 +76,7 @@ class Game extends Scene
         
         //this.logTile()
 
-        this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
+        //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
         
     }
 }

@@ -14,7 +14,7 @@ function addWorld():void{
     }
 
     Game.prototype.loadMap = function(){
-        this.load.image('tiles', 'assets/tilemaps/tileset.png');
+        this.load.image('tiles', 'assets/tilemaps/Town_Tileset_LD58.png');
         this.load.tilemapTiledJSON('map', 'assets/tilemaps/world.json');
     }
 
@@ -27,13 +27,12 @@ function addWorld():void{
         //Adding in tilemap
         this.myMap = this.make.tilemap({ key: 'map' });
         //the first arg must match the "name" of the tileset in Tiled (see public/assets/tilemaps/world.json)
-        const tileset = this.myMap.addTilesetImage('fucked_up_chungus_world', 'tiles');
+        const tileset = this.myMap.addTilesetImage('grungy_ass_town', 'tiles');
         if (!tileset) {
             throw new Error("Tileset 'map' with image key 'tiles' not found.");
         }
-        this.tileset = tileset       
-        
-        
+        this.tileset = tileset;
+
         const platforms = this.myMap.createLayer('Floor', this.tileset, 0, 0);
         if (!platforms) {
             throw new Error("Tilemap layer 'Platforms' not found or failed to create.");
@@ -44,7 +43,7 @@ function addWorld():void{
         
 
         //all tiles on layer 1 collide
-        this.platforms.setCollisionByExclusion([1], true);
+        this.platforms.setCollisionByExclusion([1,3,4,5,11,12,13,19,20,21,27,28,35,36,43,44], true);
         
         // platforms is definitely non-null here because of the guard above
         // this.physics.add.collider(this.player, this.platforms);
