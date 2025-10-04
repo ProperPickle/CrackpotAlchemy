@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import addWorld from './GameImpls/World'
+import addControllables from './GameImpls/Controllables'
 
 class Game extends Scene
 {
@@ -16,66 +17,43 @@ class Game extends Scene
         super('Game');
     }
     
-    loadBg(){}
+    loadSimpleBgAssets(){}
+    loadPlayer(){}
+    loadMap(){}
 
     preload(){
-        this.loadBg()
-        this.load.image('ground', 'assets/platform.png');
-        this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');
-        this.load.spritesheet('dude', 
-            'assets/dude.png',
-            { frameWidth: 32, frameHeight: 48 }
-        );
-        this.load.image('tiles', 'assets/tilemaps/tileset.png');
-        this.load.tilemapTiledJSON('map', 'assets/tilemaps/world.json');
+        this.loadSimpleBgAssets()
+        /*this.load.image('star', 'assets/star.png');
+        this.load.image('bomb', 'assets/bomb.png');*/
+        this.loadPlayer()
+        this.loadMap()
     }
 
     //private field 
     item:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     item2:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
-    #platforms: Phaser.Tilemaps.TilemapLayer | null = null;
+    platforms: Phaser.Tilemaps.TilemapLayer;
     player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+
+    myMap: Phaser.Tilemaps.Tilemap
+    tileset: Phaser.Tilemaps.Tileset
+
+    createSimpleBgAssets(){}
+    createPlayer(){}
+    createMap(){}
+    createCamera(){}
+    createInteractions(){}
+    
     create (){
+        //defined in world.ts
+        this.createSimpleBgAssets()
+        this.createMap()
+        this.createCamera()
         
-        // loaded via public/assets
-        let bg = this.add.image(0, 0, 'sky').setOrigin(0, 0)
-        //Adding in tilemap
-        const myMap = this.make.tilemap({ key: 'map' });
-        // the first arg must match the "name" of the tileset in Tiled (see public/assets/tilemaps/world.json)
-        const tileset = myMap.addTilesetImage('fucked_up_chungus_world', 'tiles');
-        // stretch asset
-        bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
-        this.camera = this.cameras.main;
-
-        //let star = this.physics.add.staticImage(400, 300, 'star');
-        if (!tileset) {
-            throw new Error("Tileset 'map' with image key 'tiles' not found.");
-        }
-        const platforms = myMap.createLayer('Floor', tileset, 0, 0);
-        if (!platforms) {
-            throw new Error("Tilemap layer 'Platforms' not found or failed to create.");
-        }
-        // store layer and enable collisions for non-empty tiles
-        this.#platforms = platforms;
-        this.#platforms.setCollisionByExclusion([1], true);
-        
-        //different way of defining private variables. no this.player, however variable is scoped to create(){}
-        this.player = this.physics.add.sprite(100, 450, 'dude');
-
-        /*
-        this.physics.add.overlap(this.player, star, function(){
-            star.destroy(true)
-        });
-        */
-
-        this.camera.startFollow(this.player, true, 0.5, 0.5);
-        //player physics
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
-        // platforms is definitely non-null here because of the guard above
-        this.physics.add.collider(this.player, this.#platforms as Phaser.Tilemaps.TilemapLayer);
+        //defined in controllables.ts
+        this.createPlayer()
+        this.createInteractions()
 
 
         // Defining the item
@@ -96,9 +74,9 @@ class Game extends Scene
 
         this.items.push(this.item2)
 
-        this.physics.world.setBounds(0, 0, myMap.widthInPixels, myMap.heightInPixels);
+        this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
-        this.physics.add.collider(this.items, this.#platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.items, this.platforms as Phaser.Tilemaps.TilemapLayer);
 
     }
 
@@ -110,7 +88,7 @@ class Game extends Scene
         /*
         this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
         // Get the tile at the pointer's world position
-        const tile = this.#platforms.getTileAtWorldXY(pointer.worldX, pointer.worldY);
+        const tile = this.platforms.getTileAtWorldXY(pointer.worldX, pointer.worldY);
         if (tile) {
             // Display the tile's index (for example, in the console or on-screen)
             console.log("Tile index:", tile.index);
@@ -245,7 +223,6 @@ class Game extends Scene
         }
     }
 }
-console.log("tryna add")
 addWorld()
-console.log(Game.prototype.loadBg)
+addControllables()
 export {Game}
