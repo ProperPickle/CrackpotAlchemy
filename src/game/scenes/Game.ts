@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
+import { Item } from './GameImpls/Item';
 
 class Game extends Scene
 {
@@ -8,10 +9,9 @@ class Game extends Scene
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
 
-    isDragging: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
-    isThrown: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+    fpsText: Phaser.GameObjects.Text;
 
-    items: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+    items: Set<Item> = new Set()
 
     constructor (){
         super('Game');
@@ -29,9 +29,6 @@ class Game extends Scene
         this.loadMap()
     }
 
-    //private field 
-    item:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
-    item2:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
     platforms: Phaser.Tilemaps.TilemapLayer;
     player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
@@ -66,7 +63,9 @@ class Game extends Scene
     movePlayer(){}
     logTile(){}
 
-    repelObjects(objects: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[], repulsionRadius: number, strength: number){}
+    repelItems(items: Set<Item>, repulsionRadius: number, strength: number){}
+    getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")}
+    checkIfItemBehindWall(item: Item, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     update() {
         
@@ -76,6 +75,8 @@ class Game extends Scene
 
         
         //this.logTile()
+
+        this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
         
     }
 }

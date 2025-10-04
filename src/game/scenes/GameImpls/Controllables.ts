@@ -1,7 +1,14 @@
 import {Game} from '../Game'
+import { Item } from './Item';
 
 
 function addControllables(){
+
+    let smoothedMouse = new Phaser.Math.Vector2();
+    let virtualMouse: Phaser.Math.Vector2;
+    let prevCamPos: Phaser.Math.Vector2;
+    let lastPhysicalMouse: Phaser.Math.Vector2;
+
     Game.prototype.createPlayer = function(){
         this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setCollideWorldBounds(true);
@@ -13,153 +20,277 @@ function addControllables(){
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
-        this.physics.add.collider(this.items, this.platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(Array.from(this.items), this.platforms as Phaser.Tilemaps.TilemapLayer);
+
+        virtualMouse = new Phaser.Math.Vector2(
+            this.input.mousePointer.worldX,
+            this.input.mousePointer.worldY
+        );
+        lastPhysicalMouse = new Phaser.Math.Vector2(
+            this.input.mousePointer.worldX,
+            this.input.mousePointer.worldY
+        );
+        prevCamPos = new Phaser.Math.Vector2(this.cameras.main.worldView.x, this.cameras.main.worldView.y);
+
     }
 
     Game.prototype.createItems = function(){
-        // Defining the item
-        this.item = this.physics.add.sprite(20, 450, 'dude');
-        this.item.scale *= 2
 
-        this.item.setBounce(0.2);
-        this.item.setCollideWorldBounds(true);
+        for (let i = 0; i < 10; i++) {
+            let pos = new Phaser.Math.Vector2()
+            Phaser.Math.RandomXY(pos, 40)
 
-        this.items.push(this.item)
+            let item = new Item(this, pos.x+300, pos.y+400, 'item' + i, 'dude')
+            item.scale *= 0.75
 
-        // Defining the item2
-        this.item2 = this.physics.add.sprite(50, 450, 'dude');
-        this.item2.scale *= 2
+            item.setBounce(0.2)
+            item.setCollideWorldBounds(true)
 
-        this.item2.setBounce(0.2);
-        this.item2.setCollideWorldBounds(true);
-
-        this.items.push(this.item2)
-    }
-
-    Game.prototype.repelObjects = function(objects, repulsionRadius, strength) {
-        for (let i = 0; i < objects.length; i++) {
-            for (let j = i + 1; j < objects.length; j++) {
-                const a = objects[i];
-                const b = objects[j];
-
-                const delta = a.body.position.clone().subtract(b.body.position);
-                const distance = delta.length();
-
-                if (distance === 0) {
-                    const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2)
-
-                    // apply equal and opposite velocity changes
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
-
-                    if (!this.isDragging.includes(a)) this.isThrown.push(a)
-                    if (!this.isDragging.includes(b)) this.isThrown.push(b)
-                };
-
-                if (distance < repulsionRadius) {
-                    const force = delta.normalize().scale((repulsionRadius - distance) * strength);
-
-                    // apply equal and opposite velocity changes
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
-
-                    if (!this.isDragging.includes(a)) this.isThrown.push(a)
-                    if (!this.isDragging.includes(b)) this.isThrown.push(b)
-                }
-        
-            }
+            this.items.add(item)
         }
+
     }
 
     Game.prototype.controlItems = function(){
-        const mouse = this.input.mousePointer;
+         const mouse = this.input.mousePointer;
         if (!mouse) return;
 
-        const center = this.player.body.position
+        const camDelta = new Phaser.Math.Vector2(
+            this.camera.worldView.x - prevCamPos.x,
+            this.camera.worldView.y - prevCamPos.y
+        );
+
+        const physicalMouse = new Phaser.Math.Vector2(
+            this.input.mousePointer.worldX,
+            this.input.mousePointer.worldY
+        );
+
+        // Check if real mouse moved
+        if (!physicalMouse.equals(lastPhysicalMouse)) {
+            virtualMouse.copy(physicalMouse);
+            lastPhysicalMouse.copy(physicalMouse); // update last physical position
+        } else {
+            // Mouse didn't move -> move virtualMouse by camera delta
+            virtualMouse.add(camDelta);
+        }
+
+        prevCamPos.set(this.camera.worldView.x, this.camera.worldView.y);
+
+        // Use this instead of mouse.worldX/Y from now on:
+        const mousePos = virtualMouse.clone();
+
+        smoothedMouse.x += (mousePos.x - smoothedMouse.x) * 0.25;
+        smoothedMouse.y += (mousePos.y - smoothedMouse.y) * 0.25;
+
+         //const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
+        const center = this.player.body.position.clone().add(
+            new Phaser.Math.Vector2(this.player.displayWidth/2 , 0 /*this.player.displayHeight/2*/))
         const maxRadius = 200;
 
-        let mousePos = new Phaser.Math.Vector2(mouse.worldX, mouse.worldY);
+        //let mousePos = new Phaser.Math.Vector2(this.smoothedMouse.x, this.smoothedMouse.y);
 
-        let mouseToPlayer = mousePos.clone().subtract(center);
+        let mouseToPlayer = smoothedMouse.clone().subtract(center);
 
         if (mouseToPlayer.length() > maxRadius) {
             mouseToPlayer = mouseToPlayer.normalize().scale(maxRadius);
         }
 
-        const clampedMousePos = center.clone().add(mouseToPlayer);
+        let clampedMousePos = center.clone().add(mouseToPlayer);
 
-        this.repelObjects(this.items, 50, 20);
+        clampedMousePos = this.getLineOfSightClamped(center, clampedMousePos)
+
+        this.repelItems(this.items, 20, 10); // tweak radius and strength
 
         if (mouse.primaryDown) {
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                if (item.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.isDragging.includes(item)) {
+                if (item.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
                     
-                        this.isDragging.push(item)
+                        item.isHeld = true
 
-                        if (this.isThrown.includes(item)) {
-                            this.isThrown.splice(this.isThrown.indexOf(item), 1)
+                        if (item.isThrown) {
+                            item.isThrown = false
                         }
                 }
             }
 
         } else {
-            this.isDragging.forEach(element => {
-                this.isThrown.push(element)
-            });
-            this.isDragging = []
+            this.items.forEach((item) => { if (item.isHeld) item.drop() } )
         }
-        for (let object of this.isDragging) {
+        
+        // Move currently dragged objects
+        for (let item of this.items) {
+            if (item.body == null) continue
 
-            let toTarget = clampedMousePos.clone().subtract(object.getCenter())
+            if (item.isHeld) {
+                let toTarget = clampedMousePos.clone().subtract(item.getCenter());
+                const maxSpeed = 3000;
+                const distance = toTarget.length();
+                const speed = Math.min(distance * 10, maxSpeed);
+                let desiredVelocity = toTarget.clone().normalize().scale(speed);
 
-            const maxSpeed = 4000
-            const distance = toTarget.length()
-            const speed = Math.min(distance * 10, maxSpeed)
-            let desiredVelocity = toTarget.clone().normalize().scale(speed)
+                const k = 0.5;
+                item.body.velocity.x += (desiredVelocity.x - item.body.velocity.x) * k;
+                item.body.velocity.y += (desiredVelocity.y - item.body.velocity.y) * k;
 
-            // Smooth velocity changes
-            const k = 0.3; 
-            object.body.velocity.x += (desiredVelocity.x - object.body.velocity.x) * k
-            object.body.velocity.y += (desiredVelocity.y - object.body.velocity.y) * k
+                if (this.checkIfItemBehindWall(item)) {
+                    item.isHeld = false
+                    item.isThrown = true
+                }
+            }
+
+            if (item.isThrown) {
+                // Drag
+                const k = 0.1;
+                item.body.velocity.x -= item.body.velocity.x * k
+                item.body.velocity.y -= item.body.velocity.y * k
+
+                // Once item is slowed enough, stop and remove it as a thrown item
+                if (item.body.velocity.length() < 10) {
+                    item.drop()
+                    item.setVelocity(0)
+                }
+            }
+
         }
+          
+    }
 
-        for (let i = this.isThrown.length - 1; i >= 0; i--) {
-            const object = this.isThrown[i]
+    Game.prototype.repelItems = function(items: Set<Item>, repulsionRadius: number, strength: number) {
+        // Convert set to array for index-based iteration
+        const itemArray = Array.from(items);
 
-            // Drag
-            const k = 0.1;
-            object.body.velocity.x -= object.body.velocity.x * k
-            object.body.velocity.y -= object.body.velocity.y * k
+        for (let i = 0; i < itemArray.length; i++) {
+            for (let j = i + 1; j < itemArray.length; j++) {
+                const a = itemArray[i];
+                const b = itemArray[j];
 
-            // Once item is slowed enough, stop and remove it as a thrown item
-            if (object.body.velocity.length() < 10) {
-                this.isThrown.splice(i, 1)
-                object.body.setVelocity(0)
+                if (!a.body || !b.body) continue;
+
+                const delta = a.body.position.clone().subtract(b.body.position);
+                const distance = delta.length();
+
+                if (distance === 0) {
+                    const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
+
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
+
+                }
+
+                if (distance < repulsionRadius) {
+                    const force = delta.normalize().scale((repulsionRadius - distance) * strength);
+
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
+
+                }
             }
         }
     }
 
+    Game.prototype.getLineOfSightClamped = function(from, to) {
+
+        const tilemap = this.platforms.tilemap;
+        const layerIndex = this.platforms.layerIndex;
+        const dir = to.clone().subtract(from);
+        const maxDist = dir.length();
+        const dirNorm = dir.clone().normalize();
+
+        const rayAngles = [0, -5, 5]
+        const rayDistances: number[] = []
+
+        for (let angle of rayAngles) {
+            const rad = Phaser.Math.DEG_TO_RAD * angle
+            const dirRotated = dirNorm.clone().rotate(rad)
+
+            const step = 4
+            const steps = Math.ceil(maxDist / step)
+            const stepVec = dirRotated.clone().scale(step)
+
+            let current = from.clone()
+            let distance = maxDist
+
+            for (let i = 0; i < steps; i++) {
+                current.add(stepVec)
+                const tile = tilemap.getTileAtWorldXY(current.x, current.y, true, this.cameras.main, layerIndex)
+                if (tile && tile.collides) {
+                    distance = i * step
+                    break
+                }
+            }
+
+            rayDistances.push(distance)
+        }
+
+        const p = 2; // higher p = more skew toward large distances
+        const avgDist = Math.pow(
+            rayDistances.reduce((sum, d) => sum + Math.pow(d, p), 0) / rayDistances.length,
+            1 / p
+        );
+
+        // Clamp result vector to the averaged distance
+        const finalPos = from.clone().add(dirNorm.scale(avgDist))
+        return finalPos
+    }
+
+    Game.prototype.checkIfItemBehindWall = function(item, buffer: number = 8) {
+        if (item.body == null) return false
+        const from = this.player.body.position;
+        const to = item.body.position;
+
+        const dir = to.clone().subtract(from);
+        const maxDist = Math.max(0, dir.length() - buffer); // subtract buffer
+        if (maxDist <= 0) return false; // item is too close, don't drop
+
+        const dirNorm = dir.clone().normalize();
+        const step = 4;
+        const steps = Math.ceil(maxDist / step);
+        const stepVec = dirNorm.clone().scale(step);
+
+        let current = from.clone();
+
+        for (let i = 0; i < steps; i++) {
+            current.add(stepVec);
+            const tile = this.platforms.tilemap.getTileAtWorldXY(current.x, current.y, true, this.cameras.main, this.platforms.layerIndex);
+            if (tile && tile.collides) {
+                return true; // wall detected between player and item
+            }
+        }
+
+        return false; // no wall in between
+    }
+
+
     Game.prototype.movePlayer = function(){
-        let keyboard = this.input.keyboard
+
         let cursors;
-        if(keyboard!= null)
-            cursors = keyboard.createCursorKeys();
+        if(this.input.keyboard!= null)
+            cursors = this.input.keyboard.createCursorKeys();
         else
             throw new Error("no keyboard")
+
+        let speed = 240
+        let move_dir = new Phaser.Math.Vector2(0, 0)
         
-        if (cursors.left.isDown&&!cursors.right.isDown){
-            this.player.setVelocityX(-160);
-        } else if (cursors.right.isDown&&!cursors.left.isDown){
-            this.player.setVelocityX(160);
-        } else if (cursors.up.isDown&&!cursors.down.isDown){
-            this.player.setVelocityY(-160);
-        } else if (cursors.down.isDown&&!cursors.up.isDown){
-            this.player.setVelocityY(160);
-        } else {
-            this.player.setVelocity(0);
+        if (cursors.left.isDown){
+            move_dir.x -= 1
         }
+        if (cursors.right.isDown){
+            move_dir.x += 1
+        }
+        if (cursors.up.isDown){
+            move_dir.y -= 1
+        }
+        if (cursors.down.isDown){
+            move_dir.y += 1
+        }
+
+        move_dir.normalize()
+
+        this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);
+
     }
 
     Game.prototype.logTile = function(){
