@@ -6,7 +6,7 @@ export class Game extends Scene
     msg_text : Phaser.GameObjects.Text;
 
     isDragging: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
-    isDropped: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
+    isThrown: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
 
     items: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[] = []
 
@@ -26,7 +26,8 @@ export class Game extends Scene
     }
 
     //private field 
-    player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+    item:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+    item2:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     create (){
         // loaded via public/assets
         let bg = this.add.image(0, 0, 'sky').setOrigin(0, 0)
@@ -34,11 +35,11 @@ export class Game extends Scene
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
 
         // Defining the item
-        this.player = this.physics.add.sprite(450, 450, 'dude');
-        this.player.scale *= 2
+        this.item = this.physics.add.sprite(450, 450, 'dude');
+        this.item.scale *= 2
 
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
+        this.item.setBounce(0.2);
+        this.item.setCollideWorldBounds(true);
 
         this.anims.create({
             key: 'turn',
@@ -46,37 +47,29 @@ export class Game extends Scene
             frameRate: 20
         });
 
-        this.player.anims.play('turn');
+        this.item.anims.play('turn');
 
-        this.items.push(this.player)
-        
+        this.items.push(this.item)
+
+        // Defining the item2
+        this.item2 = this.physics.add.sprite(600, 450, 'dude');
+        this.item2.scale *= 2
+
+        this.item2.setBounce(0.2);
+        this.item2.setCollideWorldBounds(true);
+
+        this.anims.create({
+            key: 'turn',
+            frames: [ { key: 'dude', frame: 4 } ],
+            frameRate: 20
+        });
+
+        this.item2.anims.play('turn');
+
+        this.items.push(this.item2)
     }
 
     update() {
-        // This is purely in here for debugging
-        let keyboard = this.input.keyboard
-        let cursors;
-        if(keyboard!= null)
-            cursors = keyboard.createCursorKeys();
-        else
-            throw new Error("no keyboard")
-        
-        if (cursors.left.isDown){
-            this.player.body.x -= 10
-        }
-        else if (cursors.right.isDown){
-            this.player.body.x += 10
-        }
-        else if (cursors.up.isDown){
-            this.player.body.y -= 10
-        }
-        else if (cursors.down.isDown){
-            this.player.body.y += 10
-        }
-        // end purely in here for debug
-
-
-
         const mouse = this.input.mousePointer;
         if (!mouse) return;
 
@@ -93,23 +86,25 @@ export class Game extends Scene
 
         const clampedMousePos = center.clone().add(mouseToPlayer);
 
+        this.repelObjects(this.items, 50, 20); // tweak radius and strength
+
         if (mouse.primaryDown) {
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                if (item.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.isDragging.includes(this.player)) {
+                if (item.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.isDragging.includes(item)) {
                     
-                        this.isDragging.push(this.player)
+                        this.isDragging.push(item)
 
-                        if (this.isDropped.includes(this.player)) {
-                            this.isDropped.splice(this.isDropped.indexOf(this.player), 1)
+                        if (this.isThrown.includes(item)) {
+                            this.isThrown.splice(this.isThrown.indexOf(item), 1)
                         }
                 }
             }
 
         } else {
             this.isDragging.forEach(element => {
-                this.isDropped.push(element)
+                this.isThrown.push(element)
             });
             this.isDragging = []
         }
@@ -117,9 +112,9 @@ export class Game extends Scene
         // Move currently dragged objects (option to have multiple at once with this?)
         for (let object of this.isDragging) {
 
-            let toTarget = clampedMousePos.clone().subtract(this.player.getCenter())
+            let toTarget = clampedMousePos.clone().subtract(object.getCenter())
 
-            const maxSpeed = 3000
+            const maxSpeed = 4000
             const distance = toTarget.length()
             const speed = Math.min(distance * 10, maxSpeed)
             let desiredVelocity = toTarget.clone().normalize().scale(speed)
@@ -130,21 +125,45 @@ export class Game extends Scene
             object.body.velocity.y += (desiredVelocity.y - object.body.velocity.y) * k
         }
 
-        for (let i = this.isDropped.length - 1; i >= 0; i--) {
-            const object = this.isDropped[i]
+        for (let i = this.isThrown.length - 1; i >= 0; i--) {
+            const object = this.isThrown[i]
 
             // Drag
             const k = 0.1;
             object.body.velocity.x -= object.body.velocity.x * k
             object.body.velocity.y -= object.body.velocity.y * k
 
-            // Once item is slowed enough, stop and remove it as a sliding item
-            if (object.body.speed < 10) {
-                this.isDropped.splice(i, 1)
+            // Once item is slowed enough, stop and remove it as a thrown item
+            if (object.body.velocity.length() < 10) {
+                this.isThrown.splice(i, 1)
                 object.body.setVelocity(0)
             }
         }
-
-        
     }
+
+    repelObjects(objects: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[], repulsionRadius: number, strength: number) {
+    for (let i = 0; i < objects.length; i++) {
+        for (let j = i + 1; j < objects.length; j++) {
+            const a = objects[i];
+            const b = objects[j];
+
+            const delta = a.body.position.clone().subtract(b.body.position);
+            const distance = delta.length();
+
+            if (distance === 0) continue;
+
+            if (distance < repulsionRadius) {
+                const force = delta.normalize().scale((repulsionRadius - distance) * strength);
+
+                // apply equal and opposite velocity changes
+                a.body.velocity.add(force);
+                b.body.velocity.subtract(force);
+
+                if (!this.isDragging.includes(a)) this.isThrown.push(a)
+                if (!this.isDragging.includes(b)) this.isThrown.push(b)
+            }
+        }
+    }
+}
+
 }
