@@ -84,6 +84,19 @@ export class Game extends Scene
         const mouse = this.input.mousePointer;
         if (!mouse) return;
 
+        const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
+        const maxRadius = 200;
+
+        let target = new Phaser.Math.Vector2(mouse.x, mouse.y);
+
+        let offset = target.clone().subtract(center);
+
+        if (offset.length() > maxRadius) {
+            offset = offset.normalize().scale(maxRadius);
+        }
+
+        const clampedPos = center.clone().add(offset);
+
         if (mouse.primaryDown) {
             for (let item of this.items) {
                 if (item.getBounds().contains(mouse.x, mouse.y)) {
@@ -105,46 +118,28 @@ export class Game extends Scene
 
         for (let object of this.isDragging) {
 
-            const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
-            const maxRadius = 200; // max distance from center
+            let toTarget = clampedPos.clone().subtract(this.player.getCenter())
 
-            let target = new Phaser.Math.Vector2(mouse.x, mouse.y);
+            const maxSpeed = 3000
+            const distance = toTarget.length()
+            const speed = Math.min(distance * 10, maxSpeed)
+            let desiredVelocity = toTarget.clone().normalize().scale(speed)
 
-            // Vector from center → mouse
-            let offset = target.clone().subtract(center);
-
-            // Clamp length
-            if (offset.length() > maxRadius) {
-                offset = offset.normalize().scale(maxRadius);
-            }
-
-            // Final clamped position
-            const clampedPos = center.clone().add(offset);
-            let toTarget = clampedPos.clone().subtract(this.player.getCenter());
-
-             // Desired velocity toward target
-            const maxSpeed = 3000;
-            const distance = toTarget.length();
-            const speed = Math.min(distance * 10, maxSpeed); // scale speed by distance
-            let desiredVelocity = toTarget.clone().normalize().scale(speed);
-
-            // Then interpolate as before
             const k = 0.3; 
-            object.body.velocity.x += (desiredVelocity.x - object.body.velocity.x) * k;
-            object.body.velocity.y += (desiredVelocity.y - object.body.velocity.y) * k;
+            object.body.velocity.x += (desiredVelocity.x - object.body.velocity.x) * k
+            object.body.velocity.y += (desiredVelocity.y - object.body.velocity.y) * k
 
         }
 
         for (let i = this.isDropped.length - 1; i >= 0; i--) {
-            const object = this.isDropped[i];
+            const object = this.isDropped[i]
 
-            // apply drag
             const k = 0.1;
-            object.body.velocity.x -= object.body.velocity.x * k;
-            object.body.velocity.y -= object.body.velocity.y * k;
+            object.body.velocity.x -= object.body.velocity.x * k
+            object.body.velocity.y -= object.body.velocity.y * k
 
             if (object.body.speed < 10) {
-                this.isDropped.splice(i, 1); // safe to remove while iterating backwards
+                this.isDropped.splice(i, 1)
                 object.body.setVelocity(0)
             }
         }
