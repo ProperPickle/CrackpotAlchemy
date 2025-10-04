@@ -45,7 +45,7 @@ export class MainMenu extends Scene
         fullscreenB.setInteractive().on('pointerdown', () => {
             console.log("Fing it")
             if (this.scale.isFullscreen)
-                this.scale.stopFullscreen
+                this.scale.stopFullscreen()
             else{
                 this.scale.startFullscreen()
             }
