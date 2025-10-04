@@ -1,5 +1,7 @@
 import { Scene } from 'phaser';
-export class Game extends Scene
+import addWorld from './GameImpls/World'
+
+class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
@@ -14,8 +16,10 @@ export class Game extends Scene
         super('Game');
     }
     
+    loadBg(){}
+
     preload(){
-        this.load.image('sky', 'assets/sky.png');
+        this.loadBg()
         this.load.image('ground', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('bomb', 'assets/bomb.png');
@@ -207,37 +211,41 @@ export class Game extends Scene
     }
 
     repelObjects(objects: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody[], repulsionRadius: number, strength: number) {
-    for (let i = 0; i < objects.length; i++) {
-        for (let j = i + 1; j < objects.length; j++) {
-            const a = objects[i];
-            const b = objects[j];
+        for (let i = 0; i < objects.length; i++) {
+            for (let j = i + 1; j < objects.length; j++) {
+                const a = objects[i];
+                const b = objects[j];
 
-            const delta = a.body.position.clone().subtract(b.body.position);
-            const distance = delta.length();
+                const delta = a.body.position.clone().subtract(b.body.position);
+                const distance = delta.length();
 
-            if (distance === 0) {
-                const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2)
+                if (distance === 0) {
+                    const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2)
 
-                // apply equal and opposite velocity changes
-                a.body.velocity.add(force);
-                b.body.velocity.subtract(force);
+                    // apply equal and opposite velocity changes
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
 
-                if (!this.isDragging.includes(a)) this.isThrown.push(a)
-                if (!this.isDragging.includes(b)) this.isThrown.push(b)
-            };
+                    if (!this.isDragging.includes(a)) this.isThrown.push(a)
+                    if (!this.isDragging.includes(b)) this.isThrown.push(b)
+                };
 
-            if (distance < repulsionRadius) {
-                const force = delta.normalize().scale((repulsionRadius - distance) * strength);
+                if (distance < repulsionRadius) {
+                    const force = delta.normalize().scale((repulsionRadius - distance) * strength);
 
-                // apply equal and opposite velocity changes
-                a.body.velocity.add(force);
-                b.body.velocity.subtract(force);
+                    // apply equal and opposite velocity changes
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
 
-                if (!this.isDragging.includes(a)) this.isThrown.push(a)
-                if (!this.isDragging.includes(b)) this.isThrown.push(b)
+                    if (!this.isDragging.includes(a)) this.isThrown.push(a)
+                    if (!this.isDragging.includes(b)) this.isThrown.push(b)
+                }
+        
             }
-    
+        }
     }
 }
-    }
-}
+console.log("tryna add")
+addWorld()
+console.log(Game.prototype.loadBg)
+export {Game}
