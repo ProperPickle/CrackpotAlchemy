@@ -15,12 +15,12 @@ function addControllables(){
     }
 
     Game.prototype.createInteractions = function(){
-        this.physics.add.collider(this.player, this.platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.player, this.platforms);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
-        this.physics.add.collider(Array.from(this.items), this.platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(Array.from(this.items), this.platforms);
 
         virtualMouse = new Phaser.Math.Vector2(
             this.input.mousePointer.worldX,

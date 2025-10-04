@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
 import { Item } from './GameImpls/Item';
+import addCart from './GameImpls/Cart';
 
 class Game extends Scene
 {
@@ -42,7 +43,10 @@ class Game extends Scene
     createCamera(){}
     createInteractions(){}
     createItems(){}
-    
+    createCart(){}
+
+    cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -56,6 +60,8 @@ class Game extends Scene
 
 
         this.createItems()
+
+        this.createCart()
     }
 
 
@@ -67,19 +73,21 @@ class Game extends Scene
     getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")}
     checkIfItemBehindWall(item: Item, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
+    slowCart(){}
+
     update() {
         
         this.controlItems()
     
         this.movePlayer()
-
         
         //this.logTile()
 
         //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
-        
+        this.slowCart()
     }
 }
 addWorld()
 addControllables()
+addCart()
 export {Game}
