@@ -47,6 +47,11 @@ function addControllables(){
             item.setCollideWorldBounds(true)
 
             this.items.add(item)
+
+            this.physics.add.overlap(this.cart, item, ()=>{
+                item.setActive(false).setVisible(false)
+                this.hiddenItems.add(item)
+            })
         }
 
     }

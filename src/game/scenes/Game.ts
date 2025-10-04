@@ -13,6 +13,7 @@ class Game extends Scene
     fpsText: Phaser.GameObjects.Text;
 
     items: Set<Item> = new Set()
+    hiddenItems: Set<Item> = new Set()
 
     constructor (){
         super('Game');
@@ -46,6 +47,8 @@ class Game extends Scene
     createCart(){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+    
+
 
     create (){
         //defined in world.ts
@@ -58,10 +61,10 @@ class Game extends Scene
         //between player, platrforms, items, and worldborder
         this.createInteractions()
 
+        this.createCart()
 
         this.createItems()
 
-        this.createCart()
     }
 
 
