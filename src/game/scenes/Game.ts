@@ -44,6 +44,7 @@ class Game extends Scene
     createMap(){}
     createCamera(){}
     createInteractions(){}
+    createItems(){}
     
     create (){
         //defined in world.ts
@@ -56,28 +57,7 @@ class Game extends Scene
         this.createInteractions()
 
 
-        // Defining the item
-        this.item = this.physics.add.sprite(20, 450, 'dude');
-        this.item.scale *= 2
-
-        this.item.setBounce(0.2);
-        this.item.setCollideWorldBounds(true);
-
-        this.items.push(this.item)
-
-        // Defining the item2
-        this.item2 = this.physics.add.sprite(50, 450, 'dude');
-        this.item2.scale *= 2
-
-        this.item2.setBounce(0.2);
-        this.item2.setCollideWorldBounds(true);
-
-        this.items.push(this.item2)
-
-        this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
-
-        this.physics.add.collider(this.items, this.platforms as Phaser.Tilemaps.TilemapLayer);
-
+        this.createItems()
     }
 
     update() {
