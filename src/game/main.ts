@@ -9,8 +9,28 @@ import { Preloader } from './scenes/Preloader';
 //  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
-    width: 1024,
-    height: 768,
+    scale: {
+        // Or set parent divId here
+        //parent: divId,
+
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+
+        width: 1024,
+        height: 768,
+
+        // Minimum size
+        min: {
+            width: 800,
+            height: 600
+        },
+        max: {
+            width: 1024,
+            height: 768
+        },
+
+        //zoom: 1,  // Size of game canvas = game size * zoom
+    },
     parent: 'game-container',
     backgroundColor: '#028af8',
     scene: [
