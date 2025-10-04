@@ -13,7 +13,7 @@ export class Game extends Scene
     constructor (){
         super('Game');
     }
-
+    
     preload(){
         this.load.image('sky', 'assets/sky.png');
         this.load.image('ground', 'assets/platform.png');
