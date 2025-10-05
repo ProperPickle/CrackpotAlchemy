@@ -52,6 +52,7 @@ class Game extends Scene
     createItem(x:number, y:number, key:itemKeys){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
+    cartIsHeld: boolean = false;
     
 
 
@@ -79,9 +80,9 @@ class Game extends Scene
 
     repelItems(items: Set<Item>, repulsionRadius: number, strength: number){}
     getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")}
-    checkIfItemBehindWall(item: Item, buffer: number = 8): boolean {throw new Error("Not implemented")}
+    checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
-    slowCart(){}
+    cartMovement(){}
 
     update() {
         
@@ -92,7 +93,7 @@ class Game extends Scene
         //this.logTile()
 
         //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
-        this.slowCart()
+        this.cartMovement()
     }
 }
 addWorld()
