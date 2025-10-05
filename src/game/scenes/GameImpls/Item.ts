@@ -4,7 +4,6 @@ export enum itemKeys{
     rat = "rat",
     can = "can",
     fries = "fries",
-    dude = "dude"
 }
 
 export class Item {//extends Phaser.Physics.Arcade.Sprite {
@@ -23,7 +22,10 @@ export class Item {//extends Phaser.Physics.Arcade.Sprite {
         this.imageKey = imageKey;
 
         // Enable physics for this sprite
+
         this.sprite = scene.physics.add.sprite(x, y, imageKey);
+        console.log(this.sprite.body)
+        
 
         this.sprite.setBounce(0.2);
         this.sprite.setCollideWorldBounds(true);
@@ -49,7 +51,12 @@ export class Item {//extends Phaser.Physics.Arcade.Sprite {
 
 export function checkCraft(a:itemKeys, b:itemKeys):itemKeys | null{
     switch(a){
-        case itemKeys.can: break;
+        case itemKeys.fries:
+            switch(b){
+                case itemKeys.rat:
+                    return itemKeys.can;
+            }    
+        break;
     }
     return null;
 }

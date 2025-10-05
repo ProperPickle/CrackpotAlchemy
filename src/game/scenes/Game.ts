@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
-import { Item } from './GameImpls/Item';
+import { Item, itemKeys } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
 
 class Game extends Scene
@@ -49,6 +49,7 @@ class Game extends Scene
     createInteractions(){}
     createItems(){}
     createCart(){}
+    createItem(x:number, y:number, key:itemKeys){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     

@@ -26,8 +26,8 @@ function addCart(){
                 return Math.random()<.5?-n:n
             }
             
-            const min_buffer = 25
-            const max_buffer = 50;
+            const min_buffer = 35
+            const max_buffer = 60;
 
             this.hiddenItems.forEach((e:Item)=>{
                 e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),

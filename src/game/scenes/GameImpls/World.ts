@@ -10,7 +10,7 @@ function addWorld():void{
         for(let key of Object.keys(itemKeys)){
             this.load.spritesheet(key, 
                 `assets/${key}.png`,
-                { frameWidth: 32, frameHeight: 48 }
+                { frameWidth: 64, frameHeight: 64 }
             );
         }
 

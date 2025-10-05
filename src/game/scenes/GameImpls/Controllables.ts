@@ -1,3 +1,4 @@
+import { Body } from 'matter';
 import {Game} from '../Game'
 import { Item , itemKeys, checkCraft} from './Item';
 
@@ -42,23 +43,33 @@ function addControllables(){
 
     }
 
+    Game.prototype.createItem = function(x, y, key: itemKeys){
+        let item = Item.createFromKey(this, x+300, y+400, key)
+        item.sprite.scale *= 0.75
+
+        item.sprite.setBounce(0.2)
+        item.sprite.setCollideWorldBounds(true)
+
+        this.items.add(item)
+
+        this.physics.add.overlap(this.cart, item.sprite, ()=>{
+            item.sprite.setActive(false).setVisible(false)
+            this.hiddenItems.add(item)
+        })
+    }
+
     Game.prototype.createItems = function(){
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
-            item.sprite.scale *= 0.75
+            this.createItem(pos.x, pos.y, itemKeys.fries)
+        }
+        for (let i = 0; i < 3; i++) {
+            let pos = new Phaser.Math.Vector2()
+            Phaser.Math.RandomXY(pos, 80)
 
-            item.sprite.setBounce(0.2)
-            item.sprite.setCollideWorldBounds(true)
-
-            this.items.add(item)
-
-            this.physics.add.overlap(this.cart, item.sprite, ()=>{
-                item.sprite.setActive(false).setVisible(false)
-                this.hiddenItems.add(item)
-            })
+            this.createItem(pos.x, pos.y, itemKeys.rat)
         }
 
         
@@ -75,7 +86,13 @@ function addControllables(){
             }
             if(!(itemA instanceof Item && itemB instanceof Item))
                 throw new Error("not an item collision")
-            checkCraft(itemA.name, itemB.name)
+            let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
+            if(craft){
+                let c = Item.createFromKey(this, itemA.sprite.x, itemB.sprite.y, craft)
+
+                a.destroy(true)
+                b.destroy(true)
+            }
         })
 
         this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
@@ -204,7 +221,7 @@ function addControllables(){
 
                 //if (!a.sprite.body || !b.sprite.body) continue;
 
-                const delta = a.sprite.body.position.clone().subtract(b.sprite.body.position);
+                const delta = a.body.position.clone().subtract(b.body.position);
                 const distance = delta.length();
 
                 if (distance === 0) {
