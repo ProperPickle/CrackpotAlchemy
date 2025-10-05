@@ -11,23 +11,12 @@ function addControllables(){
 
 
     Game.prototype.loadItems = function(){
-        this.load.spritesheet('rat', 
-            'assets/rat.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
-    }
-
-    Game.prototype.loadItems = function(){
-        this.load.spritesheet('rat', 
-            'assets/rat.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
-    }
-    Game.prototype.loadItems = function(){
-        this.load.spritesheet('rat', 
-            'assets/rat.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
+        for(let key of Object.keys(itemKeys)){
+            this.load.spritesheet(key, 
+                'assets/'+key+'.png',
+                { frameWidth: 64, frameHeight: 64 }
+            );
+        }
     }
 
     Game.prototype.createPlayer = function(){
