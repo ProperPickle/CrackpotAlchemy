@@ -24,7 +24,10 @@ function addUI():void{
             fontSize: fontSize + 'px',
             color: '#ffffff',
             align: 'center',
-            wordWrap: { width: width - fontSize * 2 }
+            wordWrap: { width: width - fontSize * 2 },
+            stroke: '#000000',       // border color
+            strokeThickness: 1,
+            resolution: 2
         }).setOrigin(0.5);
 
         panel.add(text);
