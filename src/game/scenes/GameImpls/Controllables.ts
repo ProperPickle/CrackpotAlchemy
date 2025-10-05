@@ -21,27 +21,44 @@ function addControllables(){
     }
 
     Game.prototype.createPlayer = function(){
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(100, 450, 'crackpot');
+        this.player.body.setSize(40, 56)
         this.player.setCollideWorldBounds(true);
         this.player.setDrag(0.5)
 
         //animations for player
+        
         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 5, end: 0 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 23, end: 18 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        
+        this.anims.create({
+            key: 'down',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 17, end: 12 }),
+            frameRate: 10,
+            repeat: -1
         });
 
         this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 11, end: 6 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'still',
+            frames: [ { key: 'crackpot', frame: 17 } ],
             frameRate: 10,
             repeat: -1
         });
@@ -207,7 +224,8 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
+                if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld &&
+                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY)) {
                     
                         item.isHeld = true
 
@@ -402,7 +420,13 @@ function addControllables(){
         if (move_dir.dot(new Phaser.Math.Vector2(1,0)) > 0) {
             this.player.anims.play('right', true)
         } else if (move_dir.dot(new Phaser.Math.Vector2(1,0)) == 0) {
-            this.player.anims.play('turn', true)
+            if (move_dir.dot(new Phaser.Math.Vector2(0,1)) > 0) {
+                this.player.anims.play('down', true)
+            } else if (move_dir.dot(new Phaser.Math.Vector2(0,1)) == 0) {
+                this.player.anims.play('still', true)
+            } else {
+                this.player.anims.play('up', true)
+            }
         } else {
             this.player.anims.play('left', true)
         }
