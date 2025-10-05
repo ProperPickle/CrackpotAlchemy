@@ -9,7 +9,7 @@ function addCart(){
     let lastPhysicalMouse: Phaser.Math.Vector2;
     let mouseHeldTime: number;
 
-    let cartAngle: number;
+    let cartHeldPlayerAngle: number;
 
     Game.prototype.loadCart = function(){
         this.load.spritesheet('cart', 
@@ -27,6 +27,7 @@ function addCart(){
         this.cart.setDamping(false)
         this.cart.setDrag(.5)
         this.cart.setCollideWorldBounds(true)
+        this.cart.setBounce(0.2)
 
         enableDoubleClick(this.cart, this, () =>{
             function rand(min: number, max: number): number {
@@ -132,7 +133,7 @@ function addCart(){
             mouseHeldTime++
 
             if (this.cart.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.cartIsHeld)
-                if (mouseHeldTime > 10)
+                if (mouseHeldTime == 5)
                 this.cartIsHeld = true
             
         } else {
@@ -154,14 +155,14 @@ function addCart(){
                 const maxAngularSpeed = 1;
                 angleDiff = Phaser.Math.Clamp(angleDiff, -maxAngularSpeed, maxAngularSpeed);
 
-                cartAngle = Phaser.Math.Angle.Normalize(currentAngle + angleDiff);
+                cartHeldPlayerAngle = Phaser.Math.Angle.Normalize(currentAngle + angleDiff);
 
                 const holdRadius = 55;
-                const targetX = aCenter.x + Math.cos(cartAngle) * holdRadius;
-                const targetY = aCenter.y + Math.sin(cartAngle) * holdRadius;
+                const targetX = aCenter.x + Math.cos(cartHeldPlayerAngle) * holdRadius;
+                const targetY = aCenter.y + Math.sin(cartHeldPlayerAngle) * holdRadius;
 
                 const toTarget = new Phaser.Math.Vector2(targetX - cartPos.x, targetY - cartPos.y);
-                const maxSpeed = 3000;
+                const maxSpeed = 1000;
                 const speed = Math.min(toTarget.length() * 20, maxSpeed);
                 const desiredVelocity = toTarget.normalize().scale(speed);
 
@@ -175,6 +176,26 @@ function addCart(){
                     this.cart.setVelocity(0)
                 }
 
+                let cartAngle = currentAngle * Phaser.Math.RAD_TO_DEG
+                if ((270 < cartAngle) || (cartAngle < 90))
+                    this.cart.setFlipY(false)
+                else
+                    this.cart.setFlipY(true)
+                
+                this.cart.setAngle(cartAngle)
+                
+
+            } else {
+                let cartAngle = this.cart.body.velocity.angle() * Phaser.Math.RAD_TO_DEG
+
+                if (this.cart.body.speed > 0.1) {
+                    if ((270 < cartAngle) || (cartAngle < 90))
+                        this.cart.setFlipY(false)
+                    else
+                        this.cart.setFlipY(true)
+                    
+                    this.cart.setAngle(cartAngle)
+                }
             }
 
 
