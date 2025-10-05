@@ -381,19 +381,35 @@ function addControllables(){
         else
             throw new Error("no keyboard")
 
+        interface wasd {
+            up:Phaser.Input.Keyboard.Key
+            left:Phaser.Input.Keyboard.Key
+            down:Phaser.Input.Keyboard.Key
+            right:Phaser.Input.Keyboard.Key
+        }
+
+        let wasdKeys:wasd;
+        wasdKeys = this.input.keyboard.addKeys({
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            down: Phaser.Input.Keyboard.KeyCodes.S,
+            right: Phaser.Input.Keyboard.KeyCodes.D
+        }) as wasd;
+
+
         let speed = 240
         let move_dir = new Phaser.Math.Vector2(0, 0)
         
-        if (cursors.left.isDown){
+        if (cursors.left.isDown || wasdKeys.left.isDown){
             move_dir.x -= 1
         }
-        if (cursors.right.isDown){
+        if (cursors.right.isDown || wasdKeys.right.isDown){
             move_dir.x += 1
         }
-        if (cursors.up.isDown){
+        if (cursors.up.isDown || wasdKeys.up.isDown){
             move_dir.y -= 1
         }
-        if (cursors.down.isDown){
+        if (cursors.down.isDown || wasdKeys.down.isDown){
             move_dir.y += 1
         }
 
