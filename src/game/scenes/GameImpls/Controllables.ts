@@ -12,7 +12,7 @@ function addControllables(){
 
 
     Game.prototype.loadItems = function(){
-        for(let key of Object.keys(itemKeys)){
+        for(let key of Object.keys(itemKeys)){                
             this.load.spritesheet(key, 
                 'assets/'+key+'.png',
                 { frameWidth: 64, frameHeight: 64 }
@@ -63,7 +63,9 @@ function addControllables(){
 
     Game.prototype.createItem = function(x, y, key): Item {
         let item = Item.createFromKey(this, x, y, key)
-        item.sprite.scale *= 0.75
+        item.sprite.scale *= .8
+        if(key.substr(key.length - 3)=="pot")
+            item.sprite.scale*=1.8
 
         item.sprite.setBounce(0.2)
         item.sprite.setCollideWorldBounds(true)
