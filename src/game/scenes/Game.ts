@@ -5,12 +5,6 @@ import { Item, itemKeys } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
 import addAudio from './GameImpls/Audio';
 
-declare global {
-    interface Window {
-        things:Array<any>
-    }
-}
-
 class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
