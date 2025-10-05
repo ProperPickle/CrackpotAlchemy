@@ -52,26 +52,6 @@ function addCart(){
             })
             this.hiddenItems.clear()
         })
-        /*
-        this.cart.setInteractive().on('pointerdown', ()=>{
-            function rand(min: number, max: number): number {
-                return Math.random() * (max - min) + min;
-            }
-
-            function rSign(n: number): number{
-                return Math.random()<.5?-n:n
-            }
-            
-            const min_buffer = 25
-            const max_buffer = 50;
-
-            this.hiddenItems.forEach((e:Item)=>{
-                e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
-                             this.cart.y+rSign(rand(min_buffer,max_buffer)))
-                e.sprite.setActive(true).setVisible(true)
-            })
-            this.hiddenItems.clear()
-        })*/
 
         virtualMouse = new Phaser.Math.Vector2(
             this.input.mousePointer.worldX,
@@ -130,7 +110,7 @@ function addCart(){
 
         let clampedMousePos = center.clone().add(mouseToPlayer);
 
-        clampedMousePos = this.getLineOfSightClamped(center, clampedMousePos)
+        clampedMousePos = this.getAverageRayToWall(center, clampedMousePos)
 
         if (this.input.mousePointer.primaryDown) {
             mouseHeldTime++
@@ -174,11 +154,11 @@ function addCart(){
                 this.cart.body.velocity.x += (desiredVelocity.x - this.cart.body.velocity.x) * k;
                 this.cart.body.velocity.y += (desiredVelocity.y - this.cart.body.velocity.y) * k;
 
-
+                /*
                 if (this.checkIfItemBehindWall(this.cart)) {
                     this.cartIsHeld = false;
                     this.cart.setVelocity(0)
-                }
+                }*/
 
                 let cartAngle = currentAngle * Phaser.Math.RAD_TO_DEG
                 if ((270 < cartAngle) || (cartAngle < 90))

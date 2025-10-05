@@ -1,9 +1,11 @@
 import { Scene } from 'phaser';
 import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
-import { Item, itemKeys } from './GameImpls/Item';
+import { Item, itemKeys, repelItems } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
 import addAudio from './GameImpls/Audio';
+import addUI from './GameImpls/UI';
+import addPlayer from './GameImpls/Player';
 
 class Game extends Scene
 {
@@ -30,6 +32,7 @@ class Game extends Scene
     loadAudio(){}
 
     craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
+    cartSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
 
     preload(){
         this.loadSimpleBgAssets()
@@ -64,9 +67,6 @@ class Game extends Scene
         return Item.createFromKey(this,0,0,itemKeys.can)
     }
 
-    // @ts-ignore
-    deleteItem(item:Item){}
-
     createAudio(){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
@@ -78,7 +78,7 @@ class Game extends Scene
         this.createMap()
         this.createCamera()
         
-        //defined in controllables.ts
+        //defined in player.ts
         this.createPlayer()
         //between player, platrforms, items, and worldborder
         this.createInteractions()
@@ -99,7 +99,7 @@ class Game extends Scene
 
     // @ts-ignore
     repelItems(items: Set<Item>, repulsionRadius: number, strength: number){} // @ts-ignore
-    getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")} // @ts-ignore
+    getAverageRayToWall(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")} // @ts-ignore
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
@@ -109,6 +109,8 @@ class Game extends Scene
         this.controlItems()
     
         this.movePlayer()
+
+        repelItems(this.items, 20, 10); // tweak radius and strength
         
         //this.logTile()
 
@@ -117,8 +119,10 @@ class Game extends Scene
     }
 }
 addWorld()
+addPlayer()
 addControllables()
 addCart()
 addAudio()
+addUI()
 
 export {Game}
