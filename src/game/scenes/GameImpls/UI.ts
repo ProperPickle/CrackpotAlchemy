@@ -87,9 +87,6 @@ export function createResizablePanel(
     container.add([tl, tr, bl, br]);
 
     // --- Edges ---
-    const innerWidth = width - 2 * edgeSize;
-    const innerHeight = height - 2 * edgeSize;
-
     const hTileWidth = texWidth - 2 * edgeSize;
     const vTileHeight = texHeight - 2 * edgeSize;
 
