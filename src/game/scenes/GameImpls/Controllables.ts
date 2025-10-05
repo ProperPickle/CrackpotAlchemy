@@ -82,7 +82,7 @@ function addControllables(){
     }
 
     Game.prototype.controlItems = function(){
-         const mouse = this.input.mousePointer;
+        const mouse = this.input.mousePointer;
         if (!mouse) return;
 
         const camDelta = new Phaser.Math.Vector2(
@@ -133,6 +133,8 @@ function addControllables(){
 
         if (mouse.primaryDown) {
 
+            if (!this.cartIsHeld) {
+
             // Loop all items to check for clicks
             for (let item of this.items) {
                 if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
@@ -145,7 +147,7 @@ function addControllables(){
                         }
                 }
             }
-
+            }
         } else {
             this.items.forEach((item) => { if (item.isHeld) 
                 item.isHeld = false
@@ -204,22 +206,22 @@ function addControllables(){
 
                 //if (!a.sprite.body || !b.sprite.body) continue;
 
-                const delta = a.sprite.body.position.clone().subtract(b.sprite.body.position);
+                const delta = a.body.position.clone().subtract(b.sprite.body.position);
                 const distance = delta.length();
 
                 if (distance === 0) {
                     const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
 
-                    a.sprite.body.velocity.add(force);
-                    b.sprite.body.velocity.subtract(force);
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
 
                 }
 
                 if (distance < repulsionRadius) {
                     const force = delta.normalize().scale((repulsionRadius - distance) * strength);
 
-                    a.sprite.body.velocity.add(force);
-                    b.sprite.body.velocity.subtract(force);
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
 
                 }
             }
