@@ -24,6 +24,8 @@ class Game extends Scene
     loadMap(){}
     loadItems(){}
     loadCart(){}
+    loadInteractables(){}
+
 
     preload(){
         this.loadSimpleBgAssets()
@@ -33,6 +35,7 @@ class Game extends Scene
         this.loadMap()
         this.loadItems()
         this.loadCart()
+        this.loadInteractables()
     }
 
 
@@ -49,9 +52,12 @@ class Game extends Scene
     createInteractions(){}
     createItems(){}
     createCart(){}
+    createInteractables(){}
+
     createItem(x:number, y:number, key:itemKeys):Item{
         return Item.createFromKey(this,0,0,itemKeys.can)
     }
+
     deleteItem(item:Item){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
@@ -74,6 +80,7 @@ class Game extends Scene
 
         this.createItems()
 
+        this.createInteractables()
     }
 
 

@@ -1,5 +1,6 @@
 import { Body } from 'matter';
 import {Game} from '../Game'
+import {TrashCan} from '../../interactables';
 import { Item , itemKeys, checkCraft} from './Item';
 
 
@@ -105,6 +106,10 @@ function addControllables(){
         })
 
         this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
+    }
+
+    Game.prototype.createInteractables = function(){
+        const trashCan1 = new TrashCan(this, 'trash1', 500, 500);
     }
 
     Game.prototype.controlItems = function(){
