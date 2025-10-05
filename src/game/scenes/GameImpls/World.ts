@@ -14,9 +14,9 @@ function addWorld():void{
             );
         }
 
-        this.load.spritesheet('dude', 
-            'assets/dude.png',
-            { frameWidth: 32, frameHeight: 48 }
+        this.load.spritesheet('crackpot', 
+            'assets/crackpot.png',
+            { frameWidth: 64, frameHeight: 64 }
         );
     }
 

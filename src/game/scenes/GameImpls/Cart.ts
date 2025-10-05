@@ -8,6 +8,7 @@ function addCart(){
     let prevCamPos: Phaser.Math.Vector2;
     let lastPhysicalMouse: Phaser.Math.Vector2;
     let mouseHeldTime: number;
+    const maxRadius = 200;
 
     let cartHeldPlayerAngle: number;
 
@@ -30,6 +31,9 @@ function addCart(){
         this.cart.setBounce(0.2)
 
         enableDoubleClick(this.cart, this, () =>{
+
+            if (this.cart.body.position.distance(this.player.body.position) > maxRadius * 2) return
+
             function rand(min: number, max: number): number {
                 return Math.random() * (max - min) + min;
             }
@@ -114,8 +118,7 @@ function addCart(){
 
          //const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
         const center = this.player.body.position.clone().add(
-            new Phaser.Math.Vector2(this.player.displayWidth/2 , this.player.displayHeight/2))
-        const maxRadius = 200;
+            new Phaser.Math.Vector2(this.player.displayWidth/8 , this.player.displayHeight/8))
 
         //let mousePos = new Phaser.Math.Vector2(this.smoothedMouse.x, this.smoothedMouse.y);
 
@@ -132,7 +135,8 @@ function addCart(){
         if (this.input.mousePointer.primaryDown) {
             mouseHeldTime++
 
-            if (this.cart.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.cartIsHeld)
+            if (this.cart.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.cartIsHeld
+                && this.cart.getBounds().contains(mouse.worldX, mouse.worldY))
                 if (mouseHeldTime == 10)
                 this.cartIsHeld = true
             
@@ -144,7 +148,7 @@ function addCart(){
         if (this.cartIsHeld) {
                 // --- Compute current and target polar angles relative to player ---
                 const cartPos = this.cart.body.position;
-                let aCenter = center.subtract(new Phaser.Math.Vector2(this.player.displayWidth/2, this.player.displayHeight/4))
+                let aCenter = center//.subtract(new Phaser.Math.Vector2(this.player.displayWidth/8 * 3, this.player.displayHeight/4))
                 const currentVec = cartPos.clone().subtract(aCenter);
                 const currentAngle = Phaser.Math.Angle.Normalize(currentVec.angle());
                 const targetVec = smoothedMouse.clone().subtract(aCenter);
@@ -157,7 +161,7 @@ function addCart(){
 
                 cartHeldPlayerAngle = Phaser.Math.Angle.Normalize(currentAngle + angleDiff);
 
-                const holdRadius = 55;
+                const holdRadius = 70;
                 const targetX = aCenter.x + Math.cos(cartHeldPlayerAngle) * holdRadius;
                 const targetY = aCenter.y + Math.sin(cartHeldPlayerAngle) * holdRadius;
 

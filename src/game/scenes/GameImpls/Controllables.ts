@@ -21,27 +21,44 @@ function addControllables(){
     }
 
     Game.prototype.createPlayer = function(){
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(100, 450, 'crackpot');
+        this.player.body.setSize(40, 56)
         this.player.setCollideWorldBounds(true);
         this.player.setDrag(0.5)
 
         //animations for player
+        
         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 5, end: 0 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 23, end: 18 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        
+        this.anims.create({
+            key: 'down',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 17, end: 12 }),
+            frameRate: 10,
+            repeat: -1
         });
 
         this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('crackpot', { start: 11, end: 6 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'still',
+            frames: [ { key: 'crackpot', frame: 17 } ],
             frameRate: 10,
             repeat: -1
         });
@@ -223,7 +240,8 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
+                if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld &&
+                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY)) {
                     
                         item.isHeld = true
 
@@ -397,19 +415,35 @@ function addControllables(){
         else
             throw new Error("no keyboard")
 
+        interface wasd {
+            up:Phaser.Input.Keyboard.Key
+            left:Phaser.Input.Keyboard.Key
+            down:Phaser.Input.Keyboard.Key
+            right:Phaser.Input.Keyboard.Key
+        }
+
+        let wasdKeys:wasd;
+        wasdKeys = this.input.keyboard.addKeys({
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            down: Phaser.Input.Keyboard.KeyCodes.S,
+            right: Phaser.Input.Keyboard.KeyCodes.D
+        }) as wasd;
+
+
         let speed = 240
         let move_dir = new Phaser.Math.Vector2(0, 0)
         
-        if (cursors.left.isDown){
+        if (cursors.left.isDown || wasdKeys.left.isDown){
             move_dir.x -= 1
         }
-        if (cursors.right.isDown){
+        if (cursors.right.isDown || wasdKeys.right.isDown){
             move_dir.x += 1
         }
-        if (cursors.up.isDown){
+        if (cursors.up.isDown || wasdKeys.up.isDown){
             move_dir.y -= 1
         }
-        if (cursors.down.isDown){
+        if (cursors.down.isDown || wasdKeys.down.isDown){
             move_dir.y += 1
         }
 
@@ -418,7 +452,13 @@ function addControllables(){
         if (move_dir.dot(new Phaser.Math.Vector2(1,0)) > 0) {
             this.player.anims.play('right', true)
         } else if (move_dir.dot(new Phaser.Math.Vector2(1,0)) == 0) {
-            this.player.anims.play('turn', true)
+            if (move_dir.dot(new Phaser.Math.Vector2(0,1)) > 0) {
+                this.player.anims.play('down', true)
+            } else if (move_dir.dot(new Phaser.Math.Vector2(0,1)) == 0) {
+                this.player.anims.play('still', true)
+            } else {
+                this.player.anims.play('up', true)
+            }
         } else {
             this.player.anims.play('left', true)
         }
