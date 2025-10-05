@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { Game } from '../Game';
 
 export enum itemKeys{
     rat = "rat",
@@ -6,8 +7,9 @@ export enum itemKeys{
     fries = "fries",
 }
 
-export class Item {//extends Phaser.Physics.Arcade.Sprite {
+export class Item {
     name: itemKeys;
+    scene: Game;
     imageKey: string;
     sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     isHeld: boolean = false;
@@ -19,6 +21,7 @@ export class Item {//extends Phaser.Physics.Arcade.Sprite {
         //super(scene, x, y, imageKey);
 
         this.name = name;
+        this.scene = scene as Game;
         this.imageKey = imageKey;
 
         // Enable physics for this sprite
@@ -36,13 +39,47 @@ export class Item {//extends Phaser.Physics.Arcade.Sprite {
         this.id = Symbol(name);
     }
 
-    static createFromKey(scene: Phaser.Scene, x: number, y: number, key:itemKeys){
+    deleteItem(item: Item) {
+        Game.prototype.items.delete(item)
+        item.sprite.destroy(true)
+    }
+
+    static createFromKey(scene: Phaser.Scene, x: number, y: number, key: itemKeys){
         return new Item(scene, x, y, key, key)
     }
+
 
     drop() {
         this.isHeld = false
         this.isThrown = true
+    }
+
+    isOccluded(buffer: number = 8) {
+        //if (item.body == null) return false
+        const from = this.scene.player.body.position;
+        const to = this.body.position;
+
+        const dir = to.clone().subtract(from);
+        const maxDist = Math.max(0, dir.length() - buffer); // subtract buffer
+        if (maxDist <= 0) return false; // item is too close, don't drop
+
+        const dirNorm = dir.clone().normalize();
+        const step = 4;
+        const steps = Math.ceil(maxDist / step);
+        const stepVec = dirNorm.clone().scale(step);
+
+        let current = from.clone();
+
+        for (let i = 0; i < steps; i++) {
+            current.add(stepVec);
+            const tile = this.scene.platforms.tilemap.getTileAtWorldXY(
+                current.x, current.y, true, this.scene.camera, this.scene.platforms.layerIndex);
+            if (tile && tile.collides) {
+                return true; // wall detected between player and item
+            }
+        }
+
+        return false; // no wall in between
     }
 
 }
@@ -58,3 +95,36 @@ export function checkCraft(a:itemKeys, b:itemKeys):itemKeys | null{
     }
     return null;
 }
+
+export function repelItems(items: Set<Item>, repulsionRadius: number, strength: number) {
+        // Convert set to array for index-based iteration
+        const itemArray = Array.from(items);
+
+        for (let i = 0; i < itemArray.length; i++) {
+            for (let j = i + 1; j < itemArray.length; j++) {
+                const a = itemArray[i];
+                const b = itemArray[j];
+
+                //if (!a.sprite.body || !b.sprite.body) continue;
+
+                const delta = a.body.position.clone().subtract(b.body.position);
+                const distance = delta.length();
+
+                if (distance === 0) {
+                    const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
+
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
+
+                }
+
+                if (distance < repulsionRadius) {
+                    const force = delta.normalize().scale((repulsionRadius - distance) * strength);
+
+                    a.body.velocity.add(force);
+                    b.body.velocity.subtract(force);
+
+                }
+            }
+        }
+    }

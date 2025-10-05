@@ -1,6 +1,6 @@
 import {Game} from '../Game'
 import {TrashCan} from '../../interactables';
-import { Item , itemKeys, checkCraft} from './Item';
+import { checkCraft, Item , itemKeys } from './Item';
 
 
 function addControllables(){
@@ -20,49 +20,6 @@ function addControllables(){
         }
     }
 
-    Game.prototype.createPlayer = function(){
-        this.player = this.physics.add.sprite(100, 450, 'crackpot');
-        this.player.body.setSize(40, 56)
-        this.player.setCollideWorldBounds(true);
-        this.player.setDrag(0.5)
-
-        //animations for player
-        
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('crackpot', { start: 5, end: 0 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'up',
-            frames: this.anims.generateFrameNumbers('crackpot', { start: 23, end: 18 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        
-        this.anims.create({
-            key: 'down',
-            frames: this.anims.generateFrameNumbers('crackpot', { start: 17, end: 12 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('crackpot', { start: 11, end: 6 }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'still',
-            frames: [ { key: 'crackpot', frame: 17 } ],
-            frameRate: 10,
-            repeat: -1
-        });
-    }
 
     Game.prototype.createInteractions = function(){
         this.physics.add.collider(this.player, this.platforms);
@@ -89,66 +46,6 @@ function addControllables(){
 
     }
 
-    Game.prototype.createItem = function(x, y, key: itemKeys):Item{
-        let item = Item.createFromKey(this, x, y, key)
-        item.sprite.scale *= 0.75
-
-        item.sprite.setBounce(0.2)
-        item.sprite.setCollideWorldBounds(true)
-
-        this.items.add(item)
-
-        this.physics.add.overlap(this.cart, item.sprite, ()=>{
-            item.sprite.setActive(false).setVisible(false)
-            this.hiddenItems.add(item)
-        })
-
-        this.physics.add.overlap(Array.from(this.items).map(it => it.sprite),
-        Array.from(this.items).map(it => it.sprite),
-        //item collision handler
-            (a,b)=> {
-                let itemA, itemB;
-                for (let item of this.items) {
-                    if (item.sprite === a) {
-                        itemA = item
-                    }
-                    if (item.sprite === b) {
-                        itemB = item
-                    }
-                }
-                if(!(itemA instanceof Item && itemB instanceof Item))
-                    throw new Error("not an item collision")
-                if(this.hiddenItems.has(itemA) || this.hiddenItems.has(itemB))
-                    return;
-                let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
-                if(craft){
-                    this.craftSound.play()
-                    //don't add the new item to this.items
-                    let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
-                    c.body.setVelocityX(itemA.body.velocity.x)
-                    c.body.setVelocityY(itemA.body.velocity.y)
-                    c.isHeld = itemA.isHeld
-                    c.isThrown = itemB.isThrown
-
-                    this.items.delete(itemA)
-                    this.items.delete(itemB)
-
-                    a.destroy(true)
-                    b.destroy(true)
-                }
-            }
-        )
-        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
-
-
-        return item
-    }
-
-    Game.prototype.deleteItem = function(item: Item){
-        this.items.delete(item)
-        item.sprite.destroy(true)
-    }
-
     Game.prototype.createItems = function(){
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
@@ -162,6 +59,62 @@ function addControllables(){
 
             this.createItem(pos.x+400, pos.y+200, itemKeys.rat)
         }
+    }
+
+    Game.prototype.createItem = function(x, y, key): Item {
+        let item = Item.createFromKey(this, x, y, key)
+        item.sprite.scale *= 0.75
+
+        item.sprite.setBounce(0.2)
+        item.sprite.setCollideWorldBounds(true)
+
+        this.items.add(item)
+
+        
+        this.physics.add.overlap(this.cart, item.sprite, ()=>{
+            item.sprite.setActive(false).setVisible(false)
+            this.hiddenItems.add(item)
+        })
+
+        
+        this.physics.add.overlap(Array.from(this.items).map(it => it.sprite),
+        Array.from(this.items).map(it => it.sprite), (a,b)=> {
+            //item collision handler
+            let itemA, itemB;
+            for (let item of this.items) {
+                if (item.sprite === a) {
+                    itemA = item
+                }
+                if (item.sprite === b) {
+                    itemB = item
+                }
+            }
+            if(!(itemA instanceof Item && itemB instanceof Item))
+                throw new Error("not an item collision")
+            if(this.hiddenItems.has(itemA) || this.hiddenItems.has(itemB))
+                return;
+            let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
+            if(craft){
+                this.craftSound.play()
+                //don't add the new item to this.items
+                let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
+                c.body.setVelocityX(itemA.body.velocity.x)
+                c.body.setVelocityY(itemA.body.velocity.y)
+                c.isHeld = itemA.isHeld
+                c.isThrown = itemB.isThrown
+
+                this.items.delete(itemA)
+                this.items.delete(itemB)
+
+                a.destroy(true)
+                b.destroy(true)
+            }
+        })
+
+        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
+
+
+        return item
     }
 
     Game.prototype.createInteractables = function(){
@@ -227,9 +180,7 @@ function addControllables(){
 
         let clampedMousePos = center.clone().add(mouseToPlayer);
 
-        clampedMousePos = this.getLineOfSightClamped(center, clampedMousePos)
-
-        this.repelItems(this.items, 20, 10); // tweak radius and strength
+        clampedMousePos = this.getAverageRayToWall(center, clampedMousePos)
 
         if (mouse.primaryDown) {
 
@@ -272,7 +223,7 @@ function addControllables(){
                 item.body.velocity.y += (desiredVelocity.y - item.body.velocity.y) * k;
 
                 
-                if (this.checkIfItemBehindWall(item)) {
+                if (item.isOccluded()) {
                     item.isHeld = false
                     item.isThrown = true
                 }
@@ -295,41 +246,8 @@ function addControllables(){
         }
           
     }
-
-    Game.prototype.repelItems = function(items: Set<Item>, repulsionRadius: number, strength: number) {
-        // Convert set to array for index-based iteration
-        const itemArray = Array.from(items);
-
-        for (let i = 0; i < itemArray.length; i++) {
-            for (let j = i + 1; j < itemArray.length; j++) {
-                const a = itemArray[i];
-                const b = itemArray[j];
-
-                //if (!a.sprite.body || !b.sprite.body) continue;
-
-                const delta = a.body.position.clone().subtract(b.body.position);
-                const distance = delta.length();
-
-                if (distance === 0) {
-                    const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
-
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
-
-                }
-
-                if (distance < repulsionRadius) {
-                    const force = delta.normalize().scale((repulsionRadius - distance) * strength);
-
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
-
-                }
-            }
-        }
-    }
-
-    Game.prototype.getLineOfSightClamped = function(from, to) {
+    
+    Game.prototype.getAverageRayToWall = function(from, to) {
 
         const tilemap = this.platforms.tilemap;
         const layerIndex = this.platforms.layerIndex;
@@ -372,96 +290,6 @@ function addControllables(){
         // Clamp result vector to the averaged distance
         const finalPos = from.clone().add(dirNorm.scale(avgDist))
         return finalPos
-    }
-
-    Game.prototype.checkIfItemBehindWall = function(item, buffer: number = 8) {
-        //if (item.body == null) return false
-        const from = this.player.body.position;
-        const to = item.body.position;
-
-        const dir = to.clone().subtract(from);
-        const maxDist = Math.max(0, dir.length() - buffer); // subtract buffer
-        if (maxDist <= 0) return false; // item is too close, don't drop
-
-        const dirNorm = dir.clone().normalize();
-        const step = 4;
-        const steps = Math.ceil(maxDist / step);
-        const stepVec = dirNorm.clone().scale(step);
-
-        let current = from.clone();
-
-        for (let i = 0; i < steps; i++) {
-            current.add(stepVec);
-            const tile = this.platforms.tilemap.getTileAtWorldXY(current.x, current.y, true, this.cameras.main, this.platforms.layerIndex);
-            if (tile && tile.collides) {
-                return true; // wall detected between player and item
-            }
-        }
-
-        return false; // no wall in between
-    }
-
-
-    Game.prototype.movePlayer = function(){
-
-        //if (this.camera.worldView.x)
-
-        let cursors;
-        if(this.input.keyboard!= null)
-            cursors = this.input.keyboard.createCursorKeys();
-        else
-            throw new Error("no keyboard")
-
-        interface wasd {
-            up:Phaser.Input.Keyboard.Key
-            left:Phaser.Input.Keyboard.Key
-            down:Phaser.Input.Keyboard.Key
-            right:Phaser.Input.Keyboard.Key
-        }
-
-        let wasdKeys:wasd;
-        wasdKeys = this.input.keyboard.addKeys({
-            up: Phaser.Input.Keyboard.KeyCodes.W,
-            left: Phaser.Input.Keyboard.KeyCodes.A,
-            down: Phaser.Input.Keyboard.KeyCodes.S,
-            right: Phaser.Input.Keyboard.KeyCodes.D
-        }) as wasd;
-
-
-        let speed = 240
-        let move_dir = new Phaser.Math.Vector2(0, 0)
-        
-        if (cursors.left.isDown || wasdKeys.left.isDown){
-            move_dir.x -= 1
-        }
-        if (cursors.right.isDown || wasdKeys.right.isDown){
-            move_dir.x += 1
-        }
-        if (cursors.up.isDown || wasdKeys.up.isDown){
-            move_dir.y -= 1
-        }
-        if (cursors.down.isDown || wasdKeys.down.isDown){
-            move_dir.y += 1
-        }
-
-        move_dir.normalize()
-
-        if (move_dir.dot(new Phaser.Math.Vector2(1,0)) > 0) {
-            this.player.anims.play('right', true)
-        } else if (move_dir.dot(new Phaser.Math.Vector2(1,0)) == 0) {
-            if (move_dir.dot(new Phaser.Math.Vector2(0,1)) > 0) {
-                this.player.anims.play('down', true)
-            } else if (move_dir.dot(new Phaser.Math.Vector2(0,1)) == 0) {
-                this.player.anims.play('still', true)
-            } else {
-                this.player.anims.play('up', true)
-            }
-        } else {
-            this.player.anims.play('left', true)
-        }
-
-        this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);
-
     }
 
     Game.prototype.logTile = function(){

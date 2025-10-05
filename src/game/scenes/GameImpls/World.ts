@@ -1,23 +1,9 @@
 import {Game} from '../Game'
-import { itemKeys } from './Item';
+
 function addWorld():void{
     Game.prototype.loadSimpleBgAssets = function(){
         this.load.image('sky', 'assets/sky.png');
         this.load.image('ground', 'assets/platform.png');
-    }
-
-    Game.prototype.loadPlayer = function(){
-        for(let key of Object.keys(itemKeys)){
-            this.load.spritesheet(key, 
-                `assets/${key}.png`,
-                { frameWidth: 64, frameHeight: 64 }
-            );
-        }
-
-        this.load.spritesheet('crackpot', 
-            'assets/crackpot.png',
-            { frameWidth: 64, frameHeight: 64 }
-        );
     }
 
     Game.prototype.loadMap = function(){
