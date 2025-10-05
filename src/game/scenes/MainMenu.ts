@@ -50,10 +50,5 @@ export class MainMenu extends Scene
             }
             this.scale.refresh()
         })
-
-        // activates on any click
-        // this.input.once('pointerdown', () => {
-
-        // });
     }
 }
