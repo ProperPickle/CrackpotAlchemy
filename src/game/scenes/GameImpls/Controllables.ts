@@ -1,4 +1,3 @@
-import { Body } from 'matter';
 import {Game} from '../Game'
 import {TrashCan} from '../../interactables';
 import { Item , itemKeys, checkCraft} from './Item';

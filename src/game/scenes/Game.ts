@@ -58,10 +58,12 @@ class Game extends Scene
     createCart(){}
     createInteractables(){}
 
+    // @ts-ignore
     createItem(x:number, y:number, key:itemKeys):Item{
         return Item.createFromKey(this,0,0,itemKeys.can)
     }
 
+    // @ts-ignore
     deleteItem(item:Item){}
 
     createAudio(){}
@@ -94,8 +96,9 @@ class Game extends Scene
     movePlayer(){}
     logTile(){}
 
-    repelItems(items: Set<Item>, repulsionRadius: number, strength: number){}
-    getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")}
+    // @ts-ignore
+    repelItems(items: Set<Item>, repulsionRadius: number, strength: number){} // @ts-ignore
+    getLineOfSightClamped(from: Phaser.Math.Vector2, to: Phaser.Math.Vector2): Phaser.Math.Vector2 {throw new Error("Not implemented")} // @ts-ignore
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
