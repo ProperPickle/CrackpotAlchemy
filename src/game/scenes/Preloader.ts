@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
+import {addAudioLoader} from './GameImpls/Audio';
 
-export class Preloader extends Scene
+class Preloader extends Scene
 {
     constructor ()
     {
@@ -27,12 +28,16 @@ export class Preloader extends Scene
         });
     }
 
-    preload ()
-    {
-        //  Load the assets for the game - Replace with your own assets
-        this.load.setPath('assets');
+    loadAudio(){}
 
-        this.load.image('logo', 'logo.png');
+    preload ()
+    {   
+        //  Load the assets for the game - Replace with your own assets
+        //this.load.setPath('assets');
+
+        this.load.image('logo', 'assets/logo.png');
+       
+        this.loadAudio()
     }
 
     create ()
@@ -44,3 +49,5 @@ export class Preloader extends Scene
         this.scene.start('MainMenu');
     }
 }
+addAudioLoader();
+export {Preloader}
