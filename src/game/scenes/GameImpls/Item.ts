@@ -8,13 +8,13 @@ export enum itemKeys{
 }
 
 export class Item extends Phaser.Physics.Arcade.Sprite {
-    name: string;
+    name: itemKeys;
     imageKey: string;
     isHeld: boolean = false;
     isThrown: boolean = true;
     id: Symbol
 
-    constructor(scene: Phaser.Scene, x: number, y: number, name: string, imageKey: string) {
+    constructor(scene: Phaser.Scene, x: number, y: number, name: itemKeys, imageKey: string) {
         super(scene, x, y, imageKey);
 
         this.name = name;
@@ -41,4 +41,11 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
         this.isThrown = true
     }
 
+}
+
+export function checkCraft(a:itemKeys, b:itemKeys):itemKeys | null{
+    switch(a){
+        case itemKeys.can: break;
+    }
+    return null;
 }

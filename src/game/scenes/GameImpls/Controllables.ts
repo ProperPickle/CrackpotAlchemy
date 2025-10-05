@@ -1,5 +1,5 @@
 import {Game} from '../Game'
-import { Item , itemKeys} from './Item';
+import { Item , itemKeys, checkCraft} from './Item';
 
 
 function addControllables(){
@@ -77,15 +77,7 @@ function addControllables(){
         this.physics.add.overlap(Array.from(this.items), Array.from(this.items), (a,b)=>{
             if(!(a instanceof Item && b instanceof Item))
                 throw new Error("not an item collision")
-            switch(a.name){
-                case 'can':
-                    switch(b.name){
-                        case 'mouse': //create pizza
-                        break;    
-                    } 
-                    break;
-                case 'mouse': break;
-            }
+            checkCraft(a.name, b.name)
         })
     }
 
