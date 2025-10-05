@@ -3,12 +3,7 @@ import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
 import { Item, itemKeys } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
-
-declare global {
-    interface Window {
-        things:Array<any>
-    }
-}
+import addAudio from './GameImpls/Audio';
 
 class Game extends Scene
 {
@@ -31,7 +26,9 @@ class Game extends Scene
     loadItems(){}
     loadCart(){}
     loadInteractables(){}
+    loadAudio(){}
 
+    craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
 
     preload(){
         this.loadSimpleBgAssets()
@@ -42,6 +39,7 @@ class Game extends Scene
         this.loadItems()
         this.loadCart()
         this.loadInteractables()
+        this.loadAudio()
     }
 
 
@@ -66,11 +64,11 @@ class Game extends Scene
 
     deleteItem(item:Item){}
 
+    createAudio(){}
+
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     cartIsHeld: boolean = false;
     
-
-
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -87,6 +85,8 @@ class Game extends Scene
         this.createItems()
 
         this.createInteractables()
+
+        this.createAudio()
     }
 
 
@@ -115,5 +115,6 @@ class Game extends Scene
 addWorld()
 addControllables()
 addCart()
+addAudio()
 
 export {Game}

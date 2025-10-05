@@ -60,38 +60,41 @@ function addControllables(){
 
         this.physics.add.overlap(Array.from(this.items).map(it => it.sprite),
         Array.from(this.items).map(it => it.sprite),
-        (a,b)=> {
-            let itemA, itemB;
-            for (let item of this.items) {
-                if (item.sprite === a) {
-                    itemA = item
+        //item collision handler
+            (a,b)=> {
+                let itemA, itemB;
+                for (let item of this.items) {
+                    if (item.sprite === a) {
+                        itemA = item
+                    }
+                    if (item.sprite === b) {
+                        itemB = item
+                    }
                 }
-                if (item.sprite === b) {
-                    itemB = item
+                if(!(itemA instanceof Item && itemB instanceof Item))
+                    throw new Error("not an item collision")
+                if(this.hiddenItems.has(itemA) || this.hiddenItems.has(itemB))
+                    return;
+                let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
+                if(craft){
+                    this.craftSound.play()
+                    //don't add the new item to this.items
+                    let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
+                    c.body.setVelocityX(itemA.body.velocity.x)
+                    c.body.setVelocityY(itemA.body.velocity.y)
+                    c.isHeld = itemA.isHeld
+                    c.isThrown = itemB.isThrown
+
+                    this.items.delete(itemA)
+                    this.items.delete(itemB)
+
+                    a.destroy(true)
+                    b.destroy(true)
                 }
             }
-            if(!(itemA instanceof Item && itemB instanceof Item))
-                throw new Error("not an item collision")
-            let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
-            if(craft){
-                //don't add the new item to this.items
-                let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
-                c.body.setVelocityX(itemA.body.velocity.x)
-                c.body.setVelocityY(itemA.body.velocity.y)
-                c.isHeld = itemA.isHeld
-                c.isThrown = itemB.isThrown
-
-                this.items.delete(itemA)
-                this.items.delete(itemB)
-
-                a.destroy(true)
-                b.destroy(true)
-            }
-        })
-
+        )
         this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
 
-        console.log(this.items)
 
         return item
     }
