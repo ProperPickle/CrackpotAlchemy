@@ -28,6 +28,8 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
         this.heldItems = heldItems;
         this.gameScene = scene as Game;
         scene.add.existing(this);
+        scene.physics.add.existing(this);
+        (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
         this.setInteractive();
         this.on('pointerdown', () => {
             const objX = this.x;
@@ -47,6 +49,7 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
         if(!this.isActive) return; 
         this.setFrame(++this.state);
         this.isActive = false; // Disable further interactions
+        (this.body as Phaser.Physics.Arcade.Body).enable = false;
         //console.log(`Trash can interacted with by player ${playerId}`);
         for(let item of this.heldItems){
             this.gameScene.createItem(this.x, this.y, item);
