@@ -13,6 +13,7 @@ function addWorld():void{
 
     Game.prototype.loadInteractables = function(){
         this.load.spritesheet('trash_can', 'assets/trash_can.png', { frameWidth: 64, frameHeight: 64 });
+        this.load.image('bouncer', 'assets/bouncer_neutral.png');
     }
 
     Game.prototype.createSimpleBgAssets = function(){

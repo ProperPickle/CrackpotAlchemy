@@ -35,7 +35,6 @@ export class Item {
         //scene.add.existing(this);
 
         this.body = this.sprite.body
-
         this.id = Symbol(name);
     }
 
@@ -104,25 +103,25 @@ export function repelItems(items: Set<Item>, repulsionRadius: number, strength: 
             for (let j = i + 1; j < itemArray.length; j++) {
                 const a = itemArray[i];
                 const b = itemArray[j];
+                const itemA = a as Item;
+                const itemB = b as Item;
 
-                //if (!a.sprite.body || !b.sprite.body) continue;
-
-                const delta = a.body.position.clone().subtract(b.body.position);
+                const delta = itemA.body.position.clone().subtract(itemB.body.position);
                 const distance = delta.length();
 
                 if (distance === 0) {
                     const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
 
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
+                    itemA.body.velocity.add(force);
+                    itemB.body.velocity.subtract(force);
 
                 }
 
                 if (distance < repulsionRadius) {
                     const force = delta.normalize().scale((repulsionRadius - distance) * strength);
 
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
+                    itemA.body.velocity.add(force);
+                    itemB.body.velocity.subtract(force);
 
                 }
             }
