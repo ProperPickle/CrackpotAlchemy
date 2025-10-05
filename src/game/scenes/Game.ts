@@ -30,6 +30,10 @@ class Game extends Scene
     loadCart(){}
     loadInteractables(){}
     loadAudio(){}
+    loadUIAssets(){}
+
+    // @ts-ignore
+    showPopup(message: string, x: number, y: number, width: number, height: number, duration = 2000, fontSize: number){}
 
     craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
     cartSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
@@ -44,6 +48,7 @@ class Game extends Scene
         this.loadCart()
         this.loadInteractables()
         this.loadAudio()
+        this.loadUIAssets()
     }
 
 
@@ -90,6 +95,9 @@ class Game extends Scene
         this.createInteractables()
 
         this.createAudio()
+
+        this.showPopup("Welcome brave adventurer!", 
+            10, 10, 300, 100, 3000, 30)
     }
 
 
@@ -105,6 +113,7 @@ class Game extends Scene
     cartMovement(){}
 
     update() {
+        //console.log(this.input.mousePointer.position)
         
         this.controlItems()
     
