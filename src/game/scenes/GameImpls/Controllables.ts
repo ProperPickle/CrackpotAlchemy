@@ -43,8 +43,8 @@ function addControllables(){
 
     }
 
-    Game.prototype.createItem = function(x, y, key: itemKeys){
-        let item = Item.createFromKey(this, x+300, y+400, key)
+    Game.prototype.createItem = function(x, y, key: itemKeys):Item{
+        let item = Item.createFromKey(this, x, y, key)
         item.sprite.scale *= 0.75
 
         item.sprite.setBounce(0.2)
@@ -56,6 +56,12 @@ function addControllables(){
             item.sprite.setActive(false).setVisible(false)
             this.hiddenItems.add(item)
         })
+        return item
+    }
+
+    Game.prototype.deleteItem = function(item: Item){
+        this.items.delete(item)
+        item.sprite.destroy(true)
     }
 
     Game.prototype.createItems = function(){
@@ -63,13 +69,13 @@ function addControllables(){
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            this.createItem(pos.x, pos.y, itemKeys.fries)
+            this.createItem(pos.x+400, pos.y+200, itemKeys.fries)
         }
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 80)
 
-            this.createItem(pos.x, pos.y, itemKeys.rat)
+            this.createItem(pos.x+400, pos.y+200, itemKeys.rat)
         }
 
         
@@ -88,7 +94,10 @@ function addControllables(){
                 throw new Error("not an item collision")
             let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
             if(craft){
-                let c = Item.createFromKey(this, itemA.sprite.x, itemB.sprite.y, craft)
+                let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
+
+                this.items.delete(itemA)
+                this.items.delete(itemB)
 
                 a.destroy(true)
                 b.destroy(true)
@@ -154,6 +163,7 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
+                console.log(item)
                 if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
                     
                         item.isHeld = true
@@ -223,11 +233,7 @@ function addControllables(){
 
                 //if (!a.sprite.body || !b.sprite.body) continue;
 
-<<<<<<< HEAD
                 const delta = a.body.position.clone().subtract(b.body.position);
-=======
-                const delta = a.body.position.clone().subtract(b.sprite.body.position);
->>>>>>> master
                 const distance = delta.length();
 
                 if (distance === 0) {

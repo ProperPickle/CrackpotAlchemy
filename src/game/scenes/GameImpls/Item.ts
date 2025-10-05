@@ -23,9 +23,7 @@ export class Item {//extends Phaser.Physics.Arcade.Sprite {
 
         // Enable physics for this sprite
 
-        this.sprite = scene.physics.add.sprite(x, y, imageKey);
-        console.log(this.sprite.body)
-        
+        this.sprite = scene.physics.add.sprite(x, y, imageKey);        
 
         this.sprite.setBounce(0.2);
         this.sprite.setCollideWorldBounds(true);

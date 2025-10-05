@@ -49,7 +49,10 @@ class Game extends Scene
     createInteractions(){}
     createItems(){}
     createCart(){}
-    createItem(x:number, y:number, key:itemKeys){}
+    createItem(x:number, y:number, key:itemKeys):Item{
+        return Item.createFromKey(this,0,0,itemKeys.can)
+    }
+    deleteItem(item:Item){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     cartIsHeld: boolean = false;
