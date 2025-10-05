@@ -1,4 +1,5 @@
 import {Game} from '../Game'
+import { itemKeys } from './Item';
 function addWorld():void{
     console.log("adding")
     Game.prototype.loadSimpleBgAssets = function(){
@@ -7,6 +8,13 @@ function addWorld():void{
     }
 
     Game.prototype.loadPlayer = function(){
+        for(let key of Object.keys(itemKeys)){
+            this.load.spritesheet(key, 
+                `assets/${key}.png`,
+                { frameWidth: 32, frameHeight: 48 }
+            );
+        }
+
         this.load.spritesheet('dude', 
             'assets/dude.png',
             { frameWidth: 32, frameHeight: 48 }

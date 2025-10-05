@@ -1,6 +1,6 @@
 import {Game} from '../Game'
-import { Item } from './Item';
 import {TrashCan} from '../../interactables';
+import { Item , itemKeys, checkCraft} from './Item';
 
 
 function addControllables(){
@@ -10,18 +10,39 @@ function addControllables(){
     let prevCamPos: Phaser.Math.Vector2;
     let lastPhysicalMouse: Phaser.Math.Vector2;
 
+
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
+
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
+
     Game.prototype.createPlayer = function(){
         this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setCollideWorldBounds(true);
     }
 
     Game.prototype.createInteractions = function(){
-        this.physics.add.collider(this.player, this.platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(this.player, this.platforms);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
-        this.physics.add.collider(Array.from(this.items), this.platforms as Phaser.Tilemaps.TilemapLayer);
+        this.physics.add.collider(Array.from(this.items), this.platforms);
 
         virtualMouse = new Phaser.Math.Vector2(
             this.input.mousePointer.worldX,
@@ -38,18 +59,29 @@ function addControllables(){
     Game.prototype.createItems = function(num: number){
 
         for (let i = 0; i < num; i++) {
+
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            let item = new Item(this, pos.x+300, pos.y+400, 'item' + i, 'dude')
+            let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
             item.scale *= 0.75
 
             item.setBounce(0.2)
             item.setCollideWorldBounds(true)
 
             this.items.add(item)
+
+            this.physics.add.overlap(this.cart, item, ()=>{
+                item.setActive(false).setVisible(false)
+                this.hiddenItems.add(item)
+            })
         }
 
+        this.physics.add.overlap(Array.from(this.items), Array.from(this.items), (a,b)=>{
+            if(!(a instanceof Item && b instanceof Item))
+                throw new Error("not an item collision")
+            checkCraft(a.name, b.name)
+        })
     }
 
     Game.prototype.createInteractables = function(){
