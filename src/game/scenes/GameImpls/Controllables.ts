@@ -99,6 +99,9 @@ function addControllables(){
         this.items.add(item)
 
         this.physics.add.overlap(this.cart, item.sprite, ()=>{
+            if(!item.sprite.active)
+                return;
+            this.cartSound.play()
             item.sprite.setActive(false).setVisible(false)
             this.hiddenItems.add(item)
         })
