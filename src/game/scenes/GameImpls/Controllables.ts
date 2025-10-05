@@ -70,7 +70,7 @@ function addControllables(){
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            this.createItem(pos.x+400, pos.y+200, itemKeys.fries)
+            this.createItem(pos.x+400, pos.y+600, itemKeys.fries)
         }
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
@@ -109,7 +109,7 @@ function addControllables(){
     }
 
     Game.prototype.createInteractables = function(){
-        const trashCan1 = new TrashCan(this, 'trash1', 500, 500);
+        new TrashCan(this, 'trash1', 500, 500);
     }
 
     Game.prototype.controlItems = function(){

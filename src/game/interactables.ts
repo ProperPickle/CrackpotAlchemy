@@ -3,7 +3,7 @@ import { itemKeys } from "./scenes/GameImpls/Item.ts";
 
 // Define an interface for interactable objects
 export interface Interactable {
-    id: string;
+    id: symbol;
     position: { x: number; y: number };
     isActive: boolean;
     state: number;
@@ -11,7 +11,7 @@ export interface Interactable {
 }
 
 class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
-    id: string;
+    id: symbol;
     position: { x: number; y: number };
     isActive: boolean;  
     state: number;
@@ -21,7 +21,7 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
     constructor(scene: Phaser.Scene, id: string, x: number, y: number, heldItems: Array<itemKeys> = [itemKeys.fries]) {
         const randFrame = Phaser.Math.Between(0, 1) == 1 ? 0 : 2
         super(scene, x, y, 'trash_can', randFrame);
-        this.id = id;
+        this.id = Symbol(id);
         this.position = { x, y };
         this.isActive = true;
         this.state = randFrame;
