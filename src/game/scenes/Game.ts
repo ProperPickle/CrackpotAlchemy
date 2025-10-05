@@ -3,7 +3,7 @@ import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
 import { Item, itemKeys, repelItems } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
-import addAudio from './GameImpls/Audio';
+import addAudio, { phaserAudio } from './GameImpls/Audio';
 import addUI from './GameImpls/UI';
 import addPlayer from './GameImpls/Player';
 
@@ -31,14 +31,12 @@ class Game extends Scene
     loadItems(){}
     loadCart(){}
     loadInteractables(){}
-    loadAudio(){}
     loadUIAssets(){}
 
-    // @ts-ignore
-    showPopup(message: string, x: number, y: number, width: number, height: number, duration = 2000, fontSize: number){}
+    craftSound: phaserAudio
+    cartSound: phaserAudio
 
-    craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
-    cartSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
+    themes: Array<phaserAudio> = []
 
     preload(){
         this.loadSimpleBgAssets()
@@ -49,8 +47,6 @@ class Game extends Scene
         this.loadItems()
         this.loadCart()
         this.loadInteractables()
-        this.loadAudio()
-        this.loadUIAssets()
     }
 
 
@@ -79,6 +75,9 @@ class Game extends Scene
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     cartIsHeld: boolean = false;
     
+    //@ts-ignore
+    showPopup(message: string, x:number, y:number,width:number, height:number, duration:number = 2000, fontSize: number) {}
+
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -98,8 +97,8 @@ class Game extends Scene
 
         this.createAudio()
 
-        this.showPopup("You mean like this? >:)", 
-            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
+        this.showPopup("Welcome brave adventurer!", 
+            10, 10, 300, 100, 3000, 30)
     }
 
 
@@ -113,6 +112,7 @@ class Game extends Scene
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
+    updateCartFrame(){}
 
     update() {
         //console.log(this.input.mousePointer.position)
@@ -127,6 +127,7 @@ class Game extends Scene
 
         //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
         this.cartMovement()
+        this.updateCartFrame()
     }
 }
 addWorld()
