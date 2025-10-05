@@ -7,27 +7,31 @@ export enum itemKeys{
     dude = "dude"
 }
 
-export class Item extends Phaser.Physics.Arcade.Sprite {
+export class Item {//extends Phaser.Physics.Arcade.Sprite {
     name: itemKeys;
     imageKey: string;
+    sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     isHeld: boolean = false;
     isThrown: boolean = true;
     id: Symbol
+    body: Phaser.Physics.Arcade.Body;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: itemKeys, imageKey: string) {
-        super(scene, x, y, imageKey);
+        //super(scene, x, y, imageKey);
 
         this.name = name;
         this.imageKey = imageKey;
 
         // Enable physics for this sprite
-        scene.physics.add.existing(this);
+        this.sprite = scene.physics.add.sprite(x, y, imageKey);
 
-        this.setBounce(0.2);
-        this.setCollideWorldBounds(true);
+        this.sprite.setBounce(0.2);
+        this.sprite.setCollideWorldBounds(true);
 
         // Add it to the scene
-        scene.add.existing(this);
+        //scene.add.existing(this);
+
+        this.body = this.sprite.body
 
         this.id = Symbol(name);
     }
