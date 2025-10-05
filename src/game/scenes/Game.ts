@@ -102,6 +102,7 @@ class Game extends Scene
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
+    updateCartFrame(){}
 
     update() {
         
@@ -115,6 +116,7 @@ class Game extends Scene
 
         //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
         this.cartMovement()
+        this.updateCartFrame()
     }
 }
 addWorld()

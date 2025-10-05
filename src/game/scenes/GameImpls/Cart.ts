@@ -14,13 +14,13 @@ function addCart(){
 
     Game.prototype.loadCart = function(){
         this.load.spritesheet('cart', 
-            'assets/bomb.png',
+            'assets/cart.png',
             { frameWidth: 64, frameHeight: 64 }
         );
     }
 
     Game.prototype.createCart = function(){
-        this.cart = this.physics.add.sprite(400, 400, 'cart').setScale(2)
+        this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
 
         this.physics.add.collider(this.cart, this.platforms);
         this.physics.add.collider(this.cart, this.player);
@@ -207,6 +207,15 @@ function addCart(){
             }
             lastClick = now;
         });
+    }
+
+    Game.prototype.updateCartFrame = function(){
+        // if(this.cart.body.velocity.x>0){
+        //     this.cart.setFrame(1)
+        // }else if(this.cart.body.velocity.x<0){
+        //     this.cart.setFrame(0)
+        // }
+        this.cart.setFlipX(false)
     }
 
 }
