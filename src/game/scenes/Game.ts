@@ -3,9 +3,10 @@ import addWorld from './GameImpls/World'
 import addControllables from './GameImpls/Controllables'
 import { Item, itemKeys, repelItems } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
-import addAudio from './GameImpls/Audio';
+import addAudio, { phaserAudio } from './GameImpls/Audio';
 import addUI from './GameImpls/UI';
 import addPlayer from './GameImpls/Player';
+import { Preloader } from './Preloader';
 
 class Game extends Scene
 {
@@ -29,10 +30,11 @@ class Game extends Scene
     loadItems(){}
     loadCart(){}
     loadInteractables(){}
-    loadAudio(){}
 
-    craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
-    cartSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
+    craftSound: phaserAudio
+    cartSound: phaserAudio
+
+    themes: Array<phaserAudio> = []
 
     preload(){
         this.loadSimpleBgAssets()
@@ -43,7 +45,6 @@ class Game extends Scene
         this.loadItems()
         this.loadCart()
         this.loadInteractables()
-        this.loadAudio()
     }
 
 
