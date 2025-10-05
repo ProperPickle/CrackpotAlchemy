@@ -72,6 +72,9 @@ function addControllables(){
 
         
         this.physics.add.overlap(this.cart, item.sprite, ()=>{
+            if(!item.sprite.active)
+                return;
+            this.cartSound.play()
             item.sprite.setActive(false).setVisible(false)
             this.hiddenItems.add(item)
         })
@@ -127,11 +130,12 @@ function addControllables(){
                 const trashCan = new TrashCan(this, `trash${idx}`, x, y);
                 (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
                 this.trashCans.add(trashCan);
-                console.log(`Created trash can at (${x}, ${y})`);
+                // console.log(`Created trash can at (${x}, ${y})`);
                 
             });
         }
         this.physics.add.collider(this.trashCans, this.player);
+        this.physics.add.collider(this.trashCans, this.cart);
     }
 
     Game.prototype.controlItems = function(){

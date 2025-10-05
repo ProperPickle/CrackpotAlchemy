@@ -31,6 +31,7 @@ class Game extends Scene
     loadAudio(){}
 
     craftSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
+    cartSound: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound
 
     preload(){
         this.loadSimpleBgAssets()
