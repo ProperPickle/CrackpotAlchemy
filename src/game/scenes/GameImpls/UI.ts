@@ -9,11 +9,12 @@ function addUI():void{
     }
 
     Game.prototype.showPopup = function(message: string, x, y, width, height, duration = 2000, fontSize: number) {
+        const cam = this.camera
         // Create a resizable textured panel
         const panel = createResizablePanel(this, 'panel', width, height, 12);
 
-        // Start off-screen (right side)
-        panel.setPosition(x-width, y)
+        // Start off-screen
+        panel.setPosition(x, cam.height + y)
         .setScrollFactor(0) // so it stays in place on screen
         .setDepth(1000);    // render above gameplay
 
@@ -31,7 +32,7 @@ function addUI():void{
 
         this.tweens.add({
             targets: panel,
-            x: x - panel.width,     // final on-screen x position
+            y: y,     // final on-screen x position
             ease: 'Cubic.Out',
             duration: 600,
         });
@@ -41,7 +42,7 @@ function addUI():void{
         this.time.delayedCall(duration, () => {
             this.tweens.add({
                 targets: panel,
-                x: -3000,  // slide off-screen again
+                y: 3000,  // slide off-screen again
                 ease: 'Cubic.In',
                 duration: 500,
                 onComplete: () => panel.destroy(),

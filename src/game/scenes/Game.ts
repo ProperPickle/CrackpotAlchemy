@@ -98,8 +98,8 @@ class Game extends Scene
 
         this.createAudio()
 
-        this.showPopup("Welcome brave adventurer!", 
-            10, 10, 300, 100, 3000, 30)
+        this.showPopup("You mean like this? >:)", 
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
     }
 
 
