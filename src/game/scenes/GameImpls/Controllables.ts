@@ -43,14 +43,14 @@ function addControllables(){
 
     }
 
-    Game.prototype.createItems = function(num: number){
+    Game.prototype.createItems = function(num: number, startX: number = 300, startY: number = 400){
 
         for (let i = 0; i < num; i++) {
 
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
+            let item = Item.createFromKey(this, pos.x+startX, pos.y+startY, itemKeys.fries)
             item.sprite.scale *= 0.75
 
             item.sprite.setBounce(0.2)

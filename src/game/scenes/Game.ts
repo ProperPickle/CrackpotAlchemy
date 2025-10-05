@@ -50,7 +50,7 @@ class Game extends Scene
     createCamera(){}
     createInteractions(){}
 
-    createItems(num: number){}
+    createItems(num: number, startX: number = 300, startY: number = 400){}
     createInteractables(){}
     createCart(){}
 
@@ -70,9 +70,8 @@ class Game extends Scene
         //between player, platrforms, items, and worldborder
         this.createInteractions()
         this.createInteractables()
-
-        this.createItems(10)
         this.createCart()
+        this.createItems(3)
 
     }
 

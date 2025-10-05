@@ -1,5 +1,4 @@
 import { Game } from "./scenes/Game.ts";
-import Controllables from "./scenes/GameImpls/Controllables.ts";
 
 // Define an interface for interactable objects
 export interface Interactable {
@@ -46,7 +45,7 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
         this.setFrame(++this.state);
         this.isActive = false; // Disable further interactions
         console.log(`Trash can interacted with by player ${playerId}`);
-        this.gameScene.createItems(3);
+        this.gameScene.createItems(3, this.x, this.y);
     }
 }
 
