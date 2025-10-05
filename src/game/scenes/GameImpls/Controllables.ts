@@ -106,7 +106,7 @@ function addControllables(){
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            this.createItem(pos.x+400, pos.y+600, itemKeys.fries)
+            this.createItem(pos.x+200, pos.y+200, itemKeys.fries)
         }
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
