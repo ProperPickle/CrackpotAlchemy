@@ -47,7 +47,7 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
         if(!this.isActive) return; 
         this.setFrame(++this.state);
         this.isActive = false; // Disable further interactions
-        console.log(`Trash can interacted with by player ${playerId}`);
+        //console.log(`Trash can interacted with by player ${playerId}`);
         for(let item of this.heldItems){
             this.gameScene.createItem(this.x, this.y, item);
         }

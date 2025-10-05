@@ -4,6 +4,12 @@ import addControllables from './GameImpls/Controllables'
 import { Item, itemKeys } from './GameImpls/Item';
 import addCart from './GameImpls/Cart';
 
+declare global {
+    interface Window {
+        things:Array<any>
+    }
+}
+
 class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
@@ -109,4 +115,5 @@ class Game extends Scene
 addWorld()
 addControllables()
 addCart()
+
 export {Game}

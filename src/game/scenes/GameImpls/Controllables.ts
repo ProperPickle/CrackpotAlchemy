@@ -57,6 +57,42 @@ function addControllables(){
             item.sprite.setActive(false).setVisible(false)
             this.hiddenItems.add(item)
         })
+
+        this.physics.add.overlap(Array.from(this.items).map(it => it.sprite),
+        Array.from(this.items).map(it => it.sprite),
+        (a,b)=> {
+            let itemA, itemB;
+            for (let item of this.items) {
+                if (item.sprite === a) {
+                    itemA = item
+                }
+                if (item.sprite === b) {
+                    itemB = item
+                }
+            }
+            if(!(itemA instanceof Item && itemB instanceof Item))
+                throw new Error("not an item collision")
+            let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
+            if(craft){
+                //don't add the new item to this.items
+                let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
+                c.body.setVelocityX(itemA.body.velocity.x)
+                c.body.setVelocityY(itemA.body.velocity.y)
+                c.isHeld = itemA.isHeld
+                c.isThrown = itemB.isThrown
+
+                this.items.delete(itemA)
+                this.items.delete(itemB)
+
+                a.destroy(true)
+                b.destroy(true)
+            }
+        })
+
+        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
+
+        console.log(this.items)
+
         return item
     }
 
@@ -78,34 +114,6 @@ function addControllables(){
 
             this.createItem(pos.x+400, pos.y+200, itemKeys.rat)
         }
-
-        
-        this.physics.add.overlap(Array.from(this.items).map(it => it.sprite), 
-        Array.from(this.items).map(it => it.sprite), (a,b)=> {
-            let itemA, itemB;
-            for (let item of this.items) {
-                if (item.sprite === a) {
-                    itemA = item
-                }
-                if (item.sprite === b) {
-                    itemB = item
-                }
-            }
-            if(!(itemA instanceof Item && itemB instanceof Item))
-                throw new Error("not an item collision")
-            let craft:itemKeys|null = checkCraft(itemA.name, itemB.name)
-            if(craft){
-                let c = this.createItem(itemA.sprite.x, itemA.sprite.y, craft)
-
-                this.items.delete(itemA)
-                this.items.delete(itemB)
-
-                a.destroy(true)
-                b.destroy(true)
-            }
-        })
-
-        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
     }
 
     Game.prototype.createInteractables = function(){
@@ -168,7 +176,6 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                console.log(item)
                 if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
                     
                         item.isHeld = true
