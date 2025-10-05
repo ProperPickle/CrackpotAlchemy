@@ -20,6 +20,7 @@ class Game extends Scene
     loadSimpleBgAssets(){}
     loadPlayer(){}
     loadMap(){}
+    loadAssets(){}
 
     preload(){
         this.loadSimpleBgAssets()
@@ -27,6 +28,7 @@ class Game extends Scene
         this.load.image('bomb', 'assets/bomb.png');*/
         this.loadPlayer()
         this.loadMap()
+        this.loadAssets()
     }
 
 
@@ -41,7 +43,8 @@ class Game extends Scene
     createMap(){}
     createCamera(){}
     createInteractions(){}
-    createItems(){}
+    createItems(num: number){}
+    createInteractables(){}
     
     create (){
         //defined in world.ts
@@ -53,9 +56,9 @@ class Game extends Scene
         this.createPlayer()
         //between player, platrforms, items, and worldborder
         this.createInteractions()
+        this.createInteractables()
 
-
-        this.createItems()
+        this.createItems(10)
     }
 
 

@@ -1,5 +1,6 @@
 import {Game} from '../Game'
 import { Item } from './Item';
+import {TrashCan} from '../../interactables';
 
 
 function addControllables(){
@@ -34,9 +35,9 @@ function addControllables(){
 
     }
 
-    Game.prototype.createItems = function(){
+    Game.prototype.createItems = function(num: number){
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < num; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
@@ -49,6 +50,10 @@ function addControllables(){
             this.items.add(item)
         }
 
+    }
+
+    Game.prototype.createInteractables = function(){
+        const trashCan1 = new TrashCan(this, 'trash1', 500, 500);
     }
 
     Game.prototype.controlItems = function(){

@@ -18,6 +18,10 @@ function addWorld():void{
         this.load.tilemapTiledJSON('map', 'assets/tilemaps/world.json');
     }
 
+    Game.prototype.loadAssets = function(){
+        this.load.spritesheet('trash_can', 'assets/trash_can.png', { frameWidth: 64, frameHeight: 64 });
+    }
+
     Game.prototype.createSimpleBgAssets = function(){
         let bg = this.add.image(0, 0, 'sky').setOrigin(0, 0)
         bg.setDisplaySize(this.sys.canvas.width, this.sys.canvas.height)
