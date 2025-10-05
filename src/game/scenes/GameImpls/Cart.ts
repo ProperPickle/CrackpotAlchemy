@@ -30,9 +30,9 @@ function addCart(){
             const max_buffer = 50;
 
             this.hiddenItems.forEach((e:Item)=>{
-                e.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
+                e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
                              this.cart.y+rSign(rand(min_buffer,max_buffer)))
-                e.setActive(true).setVisible(true)
+                e.sprite.setActive(true).setVisible(true)
             })
             this.hiddenItems.clear()
         })

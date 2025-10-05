@@ -30,8 +30,6 @@ function addControllables(){
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
-        this.physics.add.collider(Array.from(this.items), this.platforms);
-
         virtualMouse = new Phaser.Math.Vector2(
             this.input.mousePointer.worldX,
             this.input.mousePointer.worldY
@@ -50,24 +48,37 @@ function addControllables(){
             Phaser.Math.RandomXY(pos, 40)
 
             let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
-            item.scale *= 0.75
+            item.sprite.scale *= 0.75
 
-            item.setBounce(0.2)
-            item.setCollideWorldBounds(true)
+            item.sprite.setBounce(0.2)
+            item.sprite.setCollideWorldBounds(true)
 
             this.items.add(item)
 
-            this.physics.add.overlap(this.cart, item, ()=>{
-                item.setActive(false).setVisible(false)
+            this.physics.add.overlap(this.cart, item.sprite, ()=>{
+                item.sprite.setActive(false).setVisible(false)
                 this.hiddenItems.add(item)
             })
         }
 
-        this.physics.add.overlap(Array.from(this.items), Array.from(this.items), (a,b)=>{
-            if(!(a instanceof Item && b instanceof Item))
+        
+        this.physics.add.overlap(Array.from(this.items).map(it => it.sprite), 
+        Array.from(this.items).map(it => it.sprite), (a,b)=> {
+            let itemA, itemB;
+            for (let item of this.items) {
+                if (item.sprite === a) {
+                    itemA = item
+                }
+                if (item.sprite === b) {
+                    itemB = item
+                }
+            }
+            if(!(itemA instanceof Item && itemB instanceof Item))
                 throw new Error("not an item collision")
-            checkCraft(a.name, b.name)
+            checkCraft(itemA.name, itemB.name)
         })
+
+        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
     }
 
     Game.prototype.controlItems = function(){
@@ -124,10 +135,11 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
-                if (item.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
+                if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld) {
                     
                         item.isHeld = true
 
+                        
                         if (item.isThrown) {
                             item.isThrown = false
                         }
@@ -135,15 +147,18 @@ function addControllables(){
             }
 
         } else {
-            this.items.forEach((item) => { if (item.isHeld) item.drop() } )
+            this.items.forEach((item) => { if (item.isHeld) 
+                item.isHeld = false
+                item.isThrown = true
+             } )
         }
         
         // Move currently dragged objects
         for (let item of this.items) {
-            if (item.body == null) continue
+            //if (item.body == null) continue
 
             if (item.isHeld) {
-                let toTarget = clampedMousePos.clone().subtract(item.getCenter());
+                let toTarget = clampedMousePos.clone().subtract(item.sprite.getCenter());
                 const maxSpeed = 3000;
                 const distance = toTarget.length();
                 const speed = Math.min(distance * 10, maxSpeed);
@@ -153,12 +168,14 @@ function addControllables(){
                 item.body.velocity.x += (desiredVelocity.x - item.body.velocity.x) * k;
                 item.body.velocity.y += (desiredVelocity.y - item.body.velocity.y) * k;
 
+                
                 if (this.checkIfItemBehindWall(item)) {
                     item.isHeld = false
                     item.isThrown = true
                 }
             }
 
+            
             if (item.isThrown) {
                 // Drag
                 const k = 0.1;
@@ -168,7 +185,7 @@ function addControllables(){
                 // Once item is slowed enough, stop and remove it as a thrown item
                 if (item.body.velocity.length() < 10) {
                     item.drop()
-                    item.setVelocity(0)
+                    item.sprite.setVelocity(0)
                 }
             }
 
@@ -185,24 +202,24 @@ function addControllables(){
                 const a = itemArray[i];
                 const b = itemArray[j];
 
-                if (!a.body || !b.body) continue;
+                //if (!a.sprite.body || !b.sprite.body) continue;
 
-                const delta = a.body.position.clone().subtract(b.body.position);
+                const delta = a.sprite.body.position.clone().subtract(b.sprite.body.position);
                 const distance = delta.length();
 
                 if (distance === 0) {
                     const force = Phaser.Math.RandomXY(new Phaser.Math.Vector2());
 
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
+                    a.sprite.body.velocity.add(force);
+                    b.sprite.body.velocity.subtract(force);
 
                 }
 
                 if (distance < repulsionRadius) {
                     const force = delta.normalize().scale((repulsionRadius - distance) * strength);
 
-                    a.body.velocity.add(force);
-                    b.body.velocity.subtract(force);
+                    a.sprite.body.velocity.add(force);
+                    b.sprite.body.velocity.subtract(force);
 
                 }
             }
@@ -255,7 +272,7 @@ function addControllables(){
     }
 
     Game.prototype.checkIfItemBehindWall = function(item, buffer: number = 8) {
-        if (item.body == null) return false
+        //if (item.body == null) return false
         const from = this.player.body.position;
         const to = item.body.position;
 
