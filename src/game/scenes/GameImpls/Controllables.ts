@@ -34,6 +34,11 @@ function addControllables(){
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
+        // ensure the items physics group exists before any items are created
+        if (!this.itemsGroup) {
+            this.itemsGroup = this.physics.add.group();
+        }
+
         virtualMouse = new Phaser.Math.Vector2(
             this.input.mousePointer.worldX,
             this.input.mousePointer.worldY
@@ -47,6 +52,7 @@ function addControllables(){
     }
 
     Game.prototype.createItems = function(){
+        this.itemsGroup = this.physics.add.group();
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
@@ -71,7 +77,7 @@ function addControllables(){
         item.sprite.setCollideWorldBounds(true)
 
         this.items.add(item)
-
+        this.itemsGroup.add(item.sprite)
         
         this.physics.add.overlap(this.cart, item.sprite, ()=>{
             if(!item.sprite.active)
@@ -136,11 +142,25 @@ function addControllables(){
                 // console.log(`Created trash can at (${x}, ${y})`);
                 
             });
-        }
+        }   
         this.physics.add.collider(this.trashCans, this.player);
+        this.physics.add.collider(this.trashCans, this.cart);
         //adding bouncers from object layer
         this.bouncers = this.physics.add.group({immovable: true});
-        this.physics.add.collider(this.trashCans, this.cart);
+        const bouncerLayer = this.myMap.getObjectLayer('bouncers');
+        if(bouncerLayer && bouncerLayer.objects) {
+            bouncerLayer.objects.forEach((obj) => {
+                const x = (obj.x ?? 0) + 30;
+                const y = (obj.y ?? 0) + 30 - (obj.height ?? 0);
+                const bouncer = this.bouncers.create(x, y, 'bouncer');
+                (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
+                // console.log(`Created bouncer at (${x}, ${y})`);
+            });
+        }
+        this.physics.add.collider(this.bouncers, this.player);
+        this.physics.add.collider(this.bouncers, this.cart);
+        this.physics.add.collider(this.bouncers, this.itemsGroup);
+        
     }
 
     Game.prototype.controlItems = function(){

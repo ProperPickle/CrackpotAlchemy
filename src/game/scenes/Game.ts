@@ -6,7 +6,6 @@ import addCart from './GameImpls/Cart';
 import addAudio, { phaserAudio } from './GameImpls/Audio';
 import addUI from './GameImpls/UI';
 import addPlayer from './GameImpls/Player';
-import { Preloader } from './Preloader';
 
 class Game extends Scene
 {
@@ -16,7 +15,9 @@ class Game extends Scene
 
     fpsText: Phaser.GameObjects.Text;
 
+
     items: Set<Item> = new Set()
+    itemsGroup: Phaser.Physics.Arcade.Group;
     hiddenItems: Set<Item> = new Set()
     trashCans: Phaser.Physics.Arcade.Group;
     bouncers: Phaser.Physics.Arcade.Group;
@@ -30,6 +31,7 @@ class Game extends Scene
     loadItems(){}
     loadCart(){}
     loadInteractables(){}
+    loadUIAssets(){}
 
     craftSound: phaserAudio
     cartSound: phaserAudio
@@ -73,6 +75,9 @@ class Game extends Scene
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
     cartIsHeld: boolean = false;
     
+    //@ts-ignore
+    showPopup(message: string, x:number, y:number,width:number, height:number, duration:number = 2000, fontSize: number) {}
+
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -91,6 +96,9 @@ class Game extends Scene
         this.createInteractables()
 
         this.createAudio()
+
+        this.showPopup("Welcome brave adventurer!", 
+            10, 10, 300, 100, 3000, 30)
     }
 
 
@@ -107,6 +115,7 @@ class Game extends Scene
     updateCartFrame(){}
 
     update() {
+        //console.log(this.input.mousePointer.position)
         
         this.controlItems()
     

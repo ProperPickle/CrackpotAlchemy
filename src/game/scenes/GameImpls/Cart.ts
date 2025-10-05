@@ -47,7 +47,7 @@ function addCart(){
 
             this.hiddenItems.forEach((e:Item)=>{
                 e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
-                             this.cart.y+rSign(rand(min_buffer,max_buffer)))
+                this.cart.y+rSign(rand(min_buffer,max_buffer)))
                 e.sprite.setActive(true).setVisible(true)
             })
             this.hiddenItems.clear()
