@@ -16,6 +16,7 @@ class Game extends Scene
     items: Set<Item> = new Set()
     hiddenItems: Set<Item> = new Set()
     trashCans: Phaser.Physics.Arcade.Group;
+    bouncers: Phaser.Physics.Arcade.Group;
     constructor (){
         super('Game');
     }

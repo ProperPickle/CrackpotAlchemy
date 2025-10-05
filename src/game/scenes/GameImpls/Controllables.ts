@@ -148,6 +148,7 @@ function addControllables(){
     }
 
     Game.prototype.createInteractables = function(){
+        //adding trashcans from object layer
         this.trashCans = this.physics.add.group({immovable: true});
         const trashCanLayer = this.myMap.getObjectLayer('trash_cans');
         if(trashCanLayer && trashCanLayer.objects) {
@@ -162,7 +163,8 @@ function addControllables(){
             });
         }
         this.physics.add.collider(this.trashCans, this.player);
-        
+        //adding bouncers from object layer
+        this.bouncers = this.physics.add.group({immovable: true});
     }
 
     Game.prototype.controlItems = function(){
