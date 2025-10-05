@@ -13,7 +13,7 @@
   <image source="../trash_can.png" trans="ff00ff" width="256" height="64"/>
  </tileset>
  <tileset firstgid="71" name="bouncer" tilewidth="64" tileheight="64" tilecount="1" columns="1">
-  <image source="../Bouncer_Neutral_LD58.png" trans="ff00ff" width="64" height="64"/>
+  <image source="../bouncer_neutral.png" trans="ff00ff" width="64" height="64"/>
  </tileset>
  <layer id="1" name="Floor" width="30" height="20">
   <data encoding="base64">
@@ -40,6 +40,7 @@
   <object id="19" gid="71" x="64.6667" y="564" width="64" height="64">
    <properties>
     <property name="connected_door" type="object" value="20"/>
+    <property name="needed_item" value="can"/>
    </properties>
   </object>
  </objectgroup>

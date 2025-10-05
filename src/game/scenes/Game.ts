@@ -15,7 +15,9 @@ class Game extends Scene
 
     fpsText: Phaser.GameObjects.Text;
 
+
     items: Set<Item> = new Set()
+    itemsGroup: Phaser.Physics.Arcade.Group;
     hiddenItems: Set<Item> = new Set()
     trashCans: Phaser.Physics.Arcade.Group;
     bouncers: Phaser.Physics.Arcade.Group;
