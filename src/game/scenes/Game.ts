@@ -22,6 +22,8 @@ class Game extends Scene
     loadSimpleBgAssets(){}
     loadPlayer(){}
     loadMap(){}
+    loadItems(){}
+    loadCart(){}
 
     preload(){
         this.loadSimpleBgAssets()
@@ -29,6 +31,8 @@ class Game extends Scene
         this.load.image('bomb', 'assets/bomb.png');*/
         this.loadPlayer()
         this.loadMap()
+        this.loadItems()
+        this.loadCart()
     }
 
 

@@ -1,10 +1,18 @@
 import Phaser from 'phaser';
 
+export enum itemKeys{
+    rat = "rat",
+    can = "can",
+    fries = "fries",
+    dude = "dude"
+}
+
 export class Item extends Phaser.Physics.Arcade.Sprite {
     name: string;
     imageKey: string;
     isHeld: boolean = false;
     isThrown: boolean = true;
+    id: Symbol
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: string, imageKey: string) {
         super(scene, x, y, imageKey);
@@ -20,6 +28,12 @@ export class Item extends Phaser.Physics.Arcade.Sprite {
 
         // Add it to the scene
         scene.add.existing(this);
+
+        this.id = Symbol(name);
+    }
+
+    static createFromKey(scene: Phaser.Scene, x: number, y: number, key:itemKeys){
+        return new Item(scene, x, y, key, key)
     }
 
     drop() {

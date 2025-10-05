@@ -1,5 +1,5 @@
 import {Game} from '../Game'
-import { Item } from './Item';
+import { Item , itemKeys} from './Item';
 
 
 function addControllables(){
@@ -8,6 +8,27 @@ function addControllables(){
     let virtualMouse: Phaser.Math.Vector2;
     let prevCamPos: Phaser.Math.Vector2;
     let lastPhysicalMouse: Phaser.Math.Vector2;
+
+
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
+
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
+    Game.prototype.loadItems = function(){
+        this.load.spritesheet('rat', 
+            'assets/rat.png',
+            { frameWidth: 64, frameHeight: 64 }
+        );
+    }
 
     Game.prototype.createPlayer = function(){
         this.player = this.physics.add.sprite(100, 450, 'dude');
@@ -35,12 +56,11 @@ function addControllables(){
     }
 
     Game.prototype.createItems = function(){
-
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            let item = new Item(this, pos.x+300, pos.y+400, 'item' + i, 'dude')
+            let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
             item.scale *= 0.75
 
             item.setBounce(0.2)
@@ -54,6 +74,19 @@ function addControllables(){
             })
         }
 
+        this.physics.add.overlap(Array.from(this.items), Array.from(this.items), (a,b)=>{
+            if(!(a instanceof Item && b instanceof Item))
+                throw new Error("not an item collision")
+            switch(a.name){
+                case 'can':
+                    switch(b.name){
+                        case 'mouse': //create pizza
+                        break;    
+                    } 
+                    break;
+                case 'mouse': break;
+            }
+        })
     }
 
     Game.prototype.controlItems = function(){
