@@ -23,11 +23,40 @@ function addControllables(){
     Game.prototype.createPlayer = function(){
         this.player = this.physics.add.sprite(100, 450, 'dude');
         this.player.setCollideWorldBounds(true);
+        this.player.setDrag(0.5)
+
+        //animations for player
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'turn',
+            frames: [ { key: 'dude', frame: 4 } ],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frameRate: 10,
+            repeat: -1
+        });
     }
 
     Game.prototype.createInteractions = function(){
         this.physics.add.collider(this.player, this.platforms);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
+
+        let worldLeft = 0
+        let worldRight = this.myMap.widthInPixels
+        let worldTop = 0
+        let worldBottom = this.myMap.heightInPixels
+        this.camera.setBounds(worldLeft, worldTop, worldRight, worldBottom)
+
 
         this.physics.world.setBounds(0, 0, this.myMap.widthInPixels, this.myMap.heightInPixels);
 
@@ -344,6 +373,8 @@ function addControllables(){
 
     Game.prototype.movePlayer = function(){
 
+        //if (this.camera.worldView.x)
+
         let cursors;
         if(this.input.keyboard!= null)
             cursors = this.input.keyboard.createCursorKeys();
@@ -367,6 +398,14 @@ function addControllables(){
         }
 
         move_dir.normalize()
+
+        if (move_dir.dot(new Phaser.Math.Vector2(1,0)) > 0) {
+            this.player.anims.play('right', true)
+        } else if (move_dir.dot(new Phaser.Math.Vector2(1,0)) == 0) {
+            this.player.anims.play('turn', true)
+        } else {
+            this.player.anims.play('left', true)
+        }
 
         this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);
 

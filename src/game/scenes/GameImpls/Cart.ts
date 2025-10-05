@@ -115,7 +115,7 @@ function addCart(){
          //const center = new Phaser.Math.Vector2(this.sys.canvas.width/2, this.sys.canvas.height/2);
         const center = this.player.body.position.clone().add(
             new Phaser.Math.Vector2(this.player.displayWidth/2 , this.player.displayHeight/2))
-        const maxRadius = 300;
+        const maxRadius = 200;
 
         //let mousePos = new Phaser.Math.Vector2(this.smoothedMouse.x, this.smoothedMouse.y);
 
@@ -133,7 +133,7 @@ function addCart(){
             mouseHeldTime++
 
             if (this.cart.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !this.cartIsHeld)
-                if (mouseHeldTime == 5)
+                if (mouseHeldTime == 10)
                 this.cartIsHeld = true
             
         } else {
