@@ -1,7 +1,6 @@
 import {Game} from '../Game'
 import { itemKeys } from './Item';
 function addWorld():void{
-    console.log("adding")
     Game.prototype.loadSimpleBgAssets = function(){
         this.load.image('sky', 'assets/sky.png');
         this.load.image('ground', 'assets/platform.png');
