@@ -22,6 +22,7 @@ class Game extends Scene
     loadSimpleBgAssets(){}
     loadPlayer(){}
     loadMap(){}
+    loadAssets(){}
     loadItems(){}
     loadCart(){}
 
@@ -31,6 +32,7 @@ class Game extends Scene
         this.load.image('bomb', 'assets/bomb.png');*/
         this.loadPlayer()
         this.loadMap()
+        this.loadAssets()
         this.loadItems()
         this.loadCart()
     }
@@ -47,7 +49,9 @@ class Game extends Scene
     createMap(){}
     createCamera(){}
     createInteractions(){}
-    createItems(){}
+
+    createItems(num: number, startX: number = 300, startY: number = 400){}
+    createInteractables(){}
     createCart(){}
 
     cart:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
@@ -65,10 +69,9 @@ class Game extends Scene
         this.createPlayer()
         //between player, platrforms, items, and worldborder
         this.createInteractions()
-
+        this.createInteractables()
         this.createCart()
-
-        this.createItems()
+        this.createItems(3)
 
     }
 

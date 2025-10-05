@@ -1,4 +1,5 @@
 import {Game} from '../Game'
+import {TrashCan} from '../../interactables';
 import { Item , itemKeys, checkCraft} from './Item';
 
 
@@ -42,12 +43,14 @@ function addControllables(){
 
     }
 
-    Game.prototype.createItems = function(){
-        for (let i = 0; i < 3; i++) {
+    Game.prototype.createItems = function(num: number, startX: number = 300, startY: number = 400){
+
+        for (let i = 0; i < num; i++) {
+
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            let item = Item.createFromKey(this, pos.x+300, pos.y+400, itemKeys.fries)
+            let item = Item.createFromKey(this, pos.x+startX, pos.y+startY, itemKeys.fries)
             item.sprite.scale *= 0.75
 
             item.sprite.setBounce(0.2)
@@ -79,6 +82,10 @@ function addControllables(){
         })
 
         this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
+    }
+
+    Game.prototype.createInteractables = function(){
+        const trashCan1 = new TrashCan(this, 'trash1', 500, 500);
     }
 
     Game.prototype.controlItems = function(){
