@@ -113,6 +113,7 @@ class Game extends Scene
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
+    cartIsOccluded(): boolean { return false }
     updateCartFrame(){}
 
     update() {

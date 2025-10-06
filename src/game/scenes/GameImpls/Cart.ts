@@ -155,11 +155,11 @@ function addCart(){
                 this.cart.body.velocity.x += (desiredVelocity.x - this.cart.body.velocity.x) * k;
                 this.cart.body.velocity.y += (desiredVelocity.y - this.cart.body.velocity.y) * k;
 
-                /*
-                if (this.checkIfItemBehindWall(this.cart)) {
+                
+                if (this.cartIsOccluded()) {
                     this.cartIsHeld = false;
                     this.cart.setVelocity(0)
-                }*/
+                }
 
                 let cartAngle = currentAngle * Phaser.Math.RAD_TO_DEG
                 if ((270 < cartAngle) || (cartAngle < 90))
@@ -208,6 +208,34 @@ function addCart(){
             }
             lastClick = now;
         });
+    }
+
+    Game.prototype.cartIsOccluded = function (buffer: number = 8) {
+        //if (item.body == null) return false
+        const from = this.player.body.position;
+        const to = this.cart.body.position;
+
+        const dir = to.clone().subtract(from);
+        const maxDist = Math.max(0, dir.length() - buffer); // subtract buffer
+        if (maxDist <= 0) return false; // item is too close, don't drop
+
+        const dirNorm = dir.clone().normalize();
+        const step = 4;
+        const steps = Math.ceil(maxDist / step);
+        const stepVec = dirNorm.clone().scale(step);
+
+        let current = from.clone();
+
+        for (let i = 0; i < steps; i++) {
+            current.add(stepVec);
+            const tile = this.platforms.tilemap.getTileAtWorldXY(
+                current.x, current.y, true, this.camera, this.platforms.layerIndex);
+            if (tile && tile.collides) {
+                return true; // wall detected between player and item
+            }
+        }
+
+        return false; // no wall in between
     }
 
     Game.prototype.updateCartFrame = function(){
