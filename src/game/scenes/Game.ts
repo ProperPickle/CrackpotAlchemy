@@ -35,6 +35,7 @@ class Game extends Scene
     loadInteractables(){}
     loadUIAssets(){}
     loadDecor(){}
+    loadKen(){}
 
     craftSound: phaserAudio
     cartSound: phaserAudio
@@ -52,6 +53,7 @@ class Game extends Scene
         this.loadInteractables()
         this.loadDecor()
         this.loadUIAssets()
+        this.loadKen()
     }
 
 
@@ -133,6 +135,8 @@ class Game extends Scene
     cartIsOccluded(): boolean { return false }
     updateCartFrame(){}
 
+    //@ts-ignore
+    showDialogue(name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = 1){}
     //@ts-ignore
     writeDialogue(npc: Phaser.GameObjects.Sprite, name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = .2){}
 

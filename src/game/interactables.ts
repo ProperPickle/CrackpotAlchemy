@@ -3,7 +3,7 @@ import { Item, itemKeys } from "./scenes/GameImpls/Item.ts";
 
 // Define an interface for interactable objects
 export interface Interactable {
-    id: symbol;
+    id: number;
     position: { x: number; y: number };
     isActive: boolean;
     state: number;
@@ -11,17 +11,17 @@ export interface Interactable {
 }
 
 class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
-    id: symbol;
+    id: number;
     position: { x: number; y: number };
     isActive: boolean;  
     state: number;
     gameScene: Game;
     heldItems: Array<itemKeys>
 
-    constructor(scene: Phaser.Scene, id: string, x: number, y: number, heldItems: Array<itemKeys> = [itemKeys.rat]) {
+    constructor(scene: Phaser.Scene, id: number, x: number, y: number, heldItems: Array<itemKeys> = [itemKeys.rat]) {
         const randFrame = Phaser.Math.Between(0, 1) == 1 ? 0 : 2
         super(scene, x, y, 'trash_can', randFrame);
-        this.id = Symbol(id);
+        this.id = id;
         this.position = { x, y };
         this.isActive = true;
         this.state = randFrame;
@@ -56,18 +56,20 @@ class TrashCan extends Phaser.GameObjects.Sprite implements Interactable {
         }
     }
 }
+
+
 class Bouncer extends Phaser.GameObjects.Sprite implements Interactable {
-    id: symbol;
+    id: number;
     position: { x: number; y: number };
     isActive: boolean = true;
     state: number = 0;
     gameScene: Game;
     connectedDoor: Door;
     neededItem: itemKeys = itemKeys.can; // Example needed item
-    constructor (scene: Phaser.Scene, id: string, x: number, y: number, connectedDoorID: number, neededItem: itemKeys = itemKeys.can) {
+    constructor (scene: Phaser.Scene, id: number, x: number, y: number, connectedDoorID: number, neededItem: itemKeys = itemKeys.can) {
         super(scene, x, y, 'bouncer');
         //console.log(connectedDoorID);
-        this.id = Symbol(id);
+        this.id = id;
         this.position = { x, y };
         for(const kid of (scene as Game).doors.getChildren()){
             const door = kid as Door;
@@ -92,6 +94,7 @@ class Bouncer extends Phaser.GameObjects.Sprite implements Interactable {
                         if (item.sprite === itemObj) {
                             this.gameScene.items.delete(item)
                             itemObj.destroy(true)
+                            this.triggerDialogue()
                             break;
                         }
                     }
@@ -107,9 +110,12 @@ class Bouncer extends Phaser.GameObjects.Sprite implements Interactable {
         this.isActive = false;
         //this.setTexture('bouncer', 'bouncer_happy.png');
     }
+    triggerDialogue(): void{
+        this.gameScene.showDialogue("Security Guard", ["wow I am dead now"], undefined, 2500)
+    }
 }
 class Door extends Phaser.GameObjects.Sprite implements Interactable {
-    id: symbol;
+    id: number;
     position: { x: number; y: number };
     isActive: boolean = false;
     state: number = 0;

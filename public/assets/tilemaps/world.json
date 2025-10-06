@@ -3743,6 +3743,7 @@
                          "name":"needed_item",
                          "type":"string",
                          "value":"angry_pot"
+                         "value":"jelly_pot"
                         }],
                  "rotation":0,
                  "type":"",

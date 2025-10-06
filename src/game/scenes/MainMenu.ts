@@ -4,7 +4,7 @@ export class MainMenu extends Scene
 {
     background: GameObjects.Image;
     logo: GameObjects.Image;
-    title: GameObjects.Text;
+    playB: GameObjects.Image;
 
     constructor ()
     {
@@ -15,20 +15,17 @@ export class MainMenu extends Scene
     {
         this.background = this.add.image(512, 384, 'background');
 
-        this.logo = this.add.image(512, 300, 'logo');
+        this.logo = this.add.image(512, 300, 'title');
 
-        this.title = this.add.text(512, 460, 'Play Game', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5)
+        this.playB = this.add.image(512, 400, 'startB').setOrigin(0.5)
 
-        this.title.setInteractive().on('pointerdown', () => {
+        this.playB.setInteractive().on('pointerdown', () => {
             this.scene.start('Game');
-        }).on('pointerover', () => {
-            this.title.setFill("#ff4444")
-        }).on('pointerout', () => {
-            this.title.setFill("#ffffff")
-        });
+        })
+        //.on('pointerover', () => {
+        //     this.playB.setFill("#ff4444")
+        // }).on('pointerout', () => {
+        //     this.playB.setFill("#ffffff")
+        // });
     }
 }
