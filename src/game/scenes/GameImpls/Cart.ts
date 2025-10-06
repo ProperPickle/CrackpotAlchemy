@@ -23,7 +23,7 @@ function addCart(){
         this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
         .setSize(56, 56).setScale(1.2)
 
-        this.physics.add.collider(this.cart, this.platforms);
+        this.physics.add.collider(this.cart, this.walls);
         this.physics.add.collider(this.cart, this.player);
 
         this.cart.setDamping(false)

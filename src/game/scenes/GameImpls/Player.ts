@@ -22,6 +22,7 @@ function addPlayer(){
         this.player.body.setSize(40, 56)
         this.player.setCollideWorldBounds(true);
         this.player.setDrag(0.5)
+        this.player.setDepth(1)
 
         //animations for player
         
