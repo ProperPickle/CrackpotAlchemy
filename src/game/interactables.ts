@@ -66,7 +66,7 @@ class Bouncer extends Phaser.GameObjects.Sprite implements Interactable {
     neededItem: itemKeys = itemKeys.can; // Example needed item
     constructor (scene: Phaser.Scene, id: string, x: number, y: number, connectedDoorID: number, neededItem: itemKeys = itemKeys.can) {
         super(scene, x, y, 'bouncer');
-        console.log(connectedDoorID);
+        //console.log(connectedDoorID);
         this.id = Symbol(id);
         this.position = { x, y };
         for(const kid of (scene as Game).doors.getChildren()){
