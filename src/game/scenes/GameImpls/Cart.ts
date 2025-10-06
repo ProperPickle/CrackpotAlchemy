@@ -37,6 +37,7 @@ function addCart(){
 
             if (this.cart.body.position.distance(this.player.body.position) > maxRadius * 2) return
 
+            
             function rand(min: number, max: number): number {
                 return Math.random() * (max - min) + min;
             }
@@ -45,13 +46,16 @@ function addCart(){
                 return Math.random()<.5?-n:n
             }
             
-            const min_buffer = 50
-            const max_buffer = 80;
+            const min_buffer = 300
+            const max_buffer = 300;
+            
 
             this.hiddenItems.forEach((e:Item)=>{
-                e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
-                this.cart.y+rSign(rand(min_buffer,max_buffer)))
+                e.sprite.setPosition(this.cart.x,//+rSign(rand(min_buffer,max_buffer)),
+                this.cart.y)//+rSign(rand(min_buffer,max_buffer)))
+                e.sprite.setVelocity(rSign(rand(min_buffer,max_buffer)),rSign(rand(min_buffer,max_buffer)))
                 e.sprite.setActive(true).setVisible(true)
+                e.exitCartDelay = 50
             })
             this.hiddenItems.clear()
         })
@@ -122,6 +126,7 @@ function addCart(){
                 && this.cart.getBounds().contains(mouse.worldX, mouse.worldY))
                 if (mouseHeldTime == 10)
                 this.cartIsHeld = true
+                //this.items.forEach((it) => { if (it.isHeld == true)  it.drop() })
             
         } else {
             mouseHeldTime = 0

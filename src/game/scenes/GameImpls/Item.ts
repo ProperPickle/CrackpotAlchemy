@@ -21,6 +21,7 @@ export class Item {
     isThrown: boolean = true;
     id: Symbol
     body: Phaser.Physics.Arcade.Body;
+    exitCartDelay: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: itemKeys, imageKey: string) {
         //super(scene, x, y, imageKey);
