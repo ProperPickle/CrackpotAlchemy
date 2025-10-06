@@ -147,7 +147,7 @@ function addControllables(){
             trashCanLayer.objects.forEach((obj, idx) => {
                 const x = (obj.x ?? 0) + 30;
                 const y = (obj.y ?? 0) + 30 - (obj.height ?? 0);
-                const trashCan = new TrashCan(this, `trash${idx}`, x, y);
+                const trashCan = new TrashCan(this, idx, x, y);
                 (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
                 this.trashCans.add(trashCan);
                 trashCan.setDepth(2);
@@ -164,7 +164,7 @@ function addControllables(){
             doorLayer.objects.forEach((obj,idx) => {
                 const x = (obj.x ?? 0)+(obj.width ?? 0)/2;
                 const y = (obj.y ?? 0)-(obj.height ?? 0)/2;
-                const door = new Door(this, `door${idx}`, x, y, obj.id, obj.properties.open);
+                const door = new Door(this, idx, x, y, obj.id, obj.properties.open);
                 this.doors.add(door);
                 door.setDepth(2);
                 // console.log(`Created door at (${x}, ${y})`);
@@ -180,14 +180,22 @@ function addControllables(){
             bouncerLayer.objects.forEach((obj,idx) => { 
                 const x = (obj.x ?? 0) + 30;
                 const y = (obj.y ?? 0) + 30 - (obj.height ?? 0);
-                const bouncer = new Bouncer(this, `bouncer${idx}`, x, y, obj.properties[0].value, obj.properties[1].value);
+                const bouncer = new Bouncer(this, idx, x, y, obj.properties[0].value, obj.properties[1].value);
                 (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
                 this.bouncers.add(bouncer);
                 bouncer.setDepth(2);
                 this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me happy"])
                 // console.log(`Created bouncer at (${x}, ${y})`);
+                switch(obj.name){
+                    case "Bouncer1":
+                        bouncer.triggerDialogue = function(){
+                            this.gameScene.showDialogue("Security Guard", ["wow I am dead now again"], undefined, 2500)
+                        }
+                    break;
+                }
             });
         }
+
         this.physics.add.collider(this.bouncers, this.player);
         this.physics.add.collider(this.bouncers, this.cart);
         this.physics.add.collider(this.bouncers, this.itemsGroup);

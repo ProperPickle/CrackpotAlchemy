@@ -3,10 +3,16 @@ import { Game } from "../Game";
 function addDialogue(){
     Game.prototype.writeDialogue = function(npc: Phaser.GameObjects.Sprite, name:string|Array<string>, words:Array<string>, interpret?:Array<string>,
          duration:number = 3000, probability:number = 1){
+        npc.setInteractive().on('pointerdown', () => {
+            this.showDialogue(name, words, interpret, duration, probability)
+        })
+    }
+
+    Game.prototype.showDialogue = function(name:string|Array<string>, words:Array<string>, interpret?:Array<string>,
+         duration:number = 3000, probability:number = 1){
         if(typeof name == "string")
             name = new Array(words.length).fill(name)
-        npc.setInteractive().on('pointerup', () => {
-            let n = 0;
+        let n = 0;
             let showCurPop = () => {
                 console.log(n);
                 if(n>=words.length)
@@ -20,7 +26,6 @@ function addDialogue(){
             }
             if(Math.random()<probability)
                 showCurPop();
-        })
     }
 }
 export {addDialogue}
