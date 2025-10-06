@@ -127,6 +127,7 @@ class Door extends Phaser.GameObjects.Sprite implements Interactable {
         this.id = id;
         this.position = { x, y };
         this.state = open ? 1 : 0;
+        this.isActive = open;
         this.gameScene = scene as Game;
         this.doorId = doorId;
         scene.add.existing(this);
