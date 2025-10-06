@@ -23,13 +23,14 @@ function addCart(){
         this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
         //.setSize(56, 56).setScale(1.2)
 
+
         this.physics.add.collider(this.cart, this.platforms);
         this.physics.add.collider(this.cart, this.player);
 
         this.cart.setDamping(false)
         this.cart.setDrag(.5)
         this.cart.setCollideWorldBounds(true)
-        this.cart.body.setSize(40, 30)
+        this.cart.body.setSize(30, 30)
         this.cart.setBounce(0.2)
 
         enableDoubleClick(this.cart, this, () =>{
