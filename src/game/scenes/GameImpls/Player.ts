@@ -21,7 +21,7 @@ function addPlayer(){
         this.player = this.physics.add.sprite(100, 450, 'crackpot');
         this.player.body.setSize(35, 50)
         this.player.setCollideWorldBounds(true);
-        this.player.setDrag(0.5)
+        //this.player.setDrag(0.1)
         this.player.setDepth(1)
 
         //animations for player
@@ -80,6 +80,8 @@ function addPlayer(){
             frames: [ { key: 'crackpot', frame: 17 } ],
             frameRate: 20,
         });
+
+        this.writeDialogue(this.player, "Ron", ["My name is Ron. I'm a wizard.\nThe voices in my head are real"], undefined, 2000)
     }
 
     Game.prototype.movePlayer = function(){
@@ -109,7 +111,7 @@ function addPlayer(){
 
 
         let speed = 240
-        let move_dir = new Phaser.Math.Vector2(0, 0)
+        let move_dir = new Phaser.Math.Vector2()
         
         if (cursors.left.isDown || wasdKeys.left.isDown){
             move_dir.x -= 1
@@ -155,7 +157,14 @@ function addPlayer(){
             }
         }
 
-        this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);
+        if (move_dir.length() > 0)
+            this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);
+        else {
+            // Drag
+            const k = 0.2;
+            this.player.body.velocity.x -= this.player.body.velocity.x * k
+            this.player.body.velocity.y -= this.player.body.velocity.y * k
+        }
 
     }
 

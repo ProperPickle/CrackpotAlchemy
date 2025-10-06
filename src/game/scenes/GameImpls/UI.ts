@@ -1,4 +1,4 @@
-import {addAll, Game} from '../Game'
+import {Game} from '../Game'
 function addUI():void{
     Game.prototype.loadUIAssets = function(){
         this.load.image('banner', 'assets/banner_classic_curtain.png');
@@ -19,7 +19,7 @@ function addUI():void{
         .setScrollFactor(0) // so it stays in place on screen
         .setDepth(1000);    // render above gameplay
         
-        const nameText = this.add.text(75, 40, name, {
+        const nameText = this.add.text(20, 20, name, {
             fontFamily: 'Arial',
             fontSize: fontSize + 'px',
             // fontStyle: 'bold',
@@ -28,7 +28,7 @@ function addUI():void{
             wordWrap: { width: width - fontSize * 2 },
             resolution: 4,
 
-        }).setOrigin(0.5);
+        }).setOrigin(0);
 
         panel.add(nameText);
 

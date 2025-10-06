@@ -134,7 +134,7 @@ class Game extends Scene
     updateCartFrame(){}
 
     //@ts-ignore
-    writeDialogue(npc: Phaser.GameObjects.Sprite, name:string, words:Array<string>, interpret?:Array<string>, duration:number = 3000){}
+    writeDialogue(npc: Phaser.GameObjects.Sprite, name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = .2){}
 
     update() {
         //console.log(this.input.mousePointer.position)

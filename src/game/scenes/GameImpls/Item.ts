@@ -4,8 +4,12 @@ import { Game } from '../Game';
 export enum itemKeys{
     rat = "rat",
     can = "can",
-    fries = "fries",
+    saddie_meal = "saddie_meal",
     gold = "gold",
+    broken_bottle = "broken_bottle",
+    gas = "gas",
+    mystery_sludge = "mystery_sludge",
+    toxic_waste = "toxic_waste",
     heart_choc = "heart_choc",
     happy_pot = "happy_pot",
     sad_pot = "sad_pot",
@@ -97,8 +101,19 @@ export function checkCraft(a:itemKeys, b:itemKeys):itemKeys | null{
             switch(b){
                 case itemKeys.gold:
                     return itemKeys.happy_pot;
-            }    
+                case itemKeys.saddie_meal:
+                    return itemKeys.sad_pot;
+            }
         break;
+        case itemKeys.toxic_waste:
+            switch(b){
+                case itemKeys.broken_bottle:
+                    return itemKeys.angry_pot;
+                case itemKeys.gas:
+                    return itemKeys.death_pot;
+                case itemKeys.mystery_sludge:
+                    return itemKeys.jelly_pot;
+            }
     }
     return null;
 }
