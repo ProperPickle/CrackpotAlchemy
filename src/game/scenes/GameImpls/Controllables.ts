@@ -59,13 +59,13 @@ function addControllables(){
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            this.createItem(pos.x+200, pos.y+200, itemKeys.gold)
+            this.createItem(pos.x+200, pos.y+200, itemKeys.toxic_waste)
         }
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 80)
 
-            this.createItem(pos.x+400, pos.y+200, itemKeys.heart_choc)
+            this.createItem(pos.x+400, pos.y+200, itemKeys.mystery_sludge)
         }
     }
 

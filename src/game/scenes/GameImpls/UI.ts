@@ -1,4 +1,4 @@
-import {addAll, Game} from '../Game'
+import {Game} from '../Game'
 function addUI():void{
     Game.prototype.loadUIAssets = function(){
         this.load.image('banner', 'assets/banner_classic_curtain.png');
