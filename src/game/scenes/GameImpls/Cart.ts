@@ -28,6 +28,7 @@ function addCart(){
         this.cart.setDamping(false)
         this.cart.setDrag(.5)
         this.cart.setCollideWorldBounds(true)
+        this.cart.body.setSize(40, 30)
         this.cart.setBounce(0.2)
 
         enableDoubleClick(this.cart, this, () =>{

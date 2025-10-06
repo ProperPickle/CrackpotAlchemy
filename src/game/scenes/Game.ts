@@ -47,6 +47,7 @@ class Game extends Scene
         this.loadItems()
         this.loadCart()
         this.loadInteractables()
+        this.loadUIAssets()
     }
 
 
@@ -98,7 +99,7 @@ class Game extends Scene
         this.createAudio()
 
         this.showPopup("Welcome brave adventurer!", 
-            10, 10, 300, 100, 3000, 30)
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
     }
 
 
