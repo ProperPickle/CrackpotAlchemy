@@ -3264,6 +3264,12 @@
                  "height":64,
                  "id":9,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"held_items",
+                         "type":"string",
+                         "value":"saddie_meal"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -3378,6 +3384,12 @@
                  "height":64,
                  "id":139,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"held_item",
+                         "type":"string",
+                         "value":"saddie_meal"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -3406,18 +3418,6 @@
                 {
                  "gid":67,
                  "height":64,
-                 "id":143,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":2359,
-                 "y":1901
-                }, 
-                {
-                 "gid":67,
-                 "height":64,
                  "id":144,
                  "name":"",
                  "properties":[
@@ -3432,18 +3432,6 @@
                  "width":64,
                  "x":2195,
                  "y":1314
-                }, 
-                {
-                 "gid":67,
-                 "height":64,
-                 "id":148,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":2525,
-                 "y":1409
                 }, 
                 {
                  "gid":67,
@@ -3750,6 +3738,42 @@
                  "width":64,
                  "x":2441.33333333333,
                  "y":1346.66666666667
+                }, 
+                {
+                 "gid":67,
+                 "height":64,
+                 "id":545,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"held_item",
+                         "type":"string",
+                         "value":"saddie_meal"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2354.66666666667,
+                 "y":1921.33333333333
+                }, 
+                {
+                 "gid":67,
+                 "height":64,
+                 "id":546,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"held_item",
+                         "type":"string",
+                         "value":"saddie_meal"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2520,
+                 "y":1445.33333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3890,7 +3914,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":545,
+ "nextobjectid":547,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
