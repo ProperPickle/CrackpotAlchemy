@@ -3213,29 +3213,6 @@
                  "y":1536
                 }, 
                 {
-                 "gid":71,
-                 "height":64,
-                 "id":147,
-                 "name":"Bouncer4",
-                 "properties":[
-                        {
-                         "name":"connected_door",
-                         "type":"object",
-                         "value":146
-                        }, 
-                        {
-                         "name":"needed_item",
-                         "type":"string",
-                         "value":"death_pot"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":2609.91833333333,
-                 "y":1609.335
-                }, 
-                {
                  "gid":58,
                  "height":64,
                  "id":163,
@@ -3252,29 +3229,6 @@
                  "width":64,
                  "x":2880,
                  "y":2304
-                }, 
-                {
-                 "gid":71,
-                 "height":64,
-                 "id":164,
-                 "name":"Bouncer5",
-                 "properties":[
-                        {
-                         "name":"connected_door",
-                         "type":"object",
-                         "value":163
-                        }, 
-                        {
-                         "name":"needed_item",
-                         "type":"string",
-                         "value":"jelly_pot"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":2823.29333333333,
-                 "y":2334.67
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3876,6 +3830,52 @@
                  "width":64,
                  "x":1720.33333333333,
                  "y":2405.66666666667
+                }, 
+                {
+                 "gid":71,
+                 "height":64,
+                 "id":543,
+                 "name":"Bouncer4",
+                 "properties":[
+                        {
+                         "name":"connected_door",
+                         "type":"object",
+                         "value":146
+                        }, 
+                        {
+                         "name":"needed_item",
+                         "type":"string",
+                         "value":"death_pot"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2634,
+                 "y":1587
+                }, 
+                {
+                 "gid":71,
+                 "height":64,
+                 "id":544,
+                 "name":"Bouncer5",
+                 "properties":[
+                        {
+                         "name":"connected_door",
+                         "type":"object",
+                         "value":163
+                        }, 
+                        {
+                         "name":"needed_item",
+                         "type":"string",
+                         "value":"jelly_pot"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":2821,
+                 "y":2321
                 }],
          "opacity":1,
          "properties":[
@@ -3890,7 +3890,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":543,
+ "nextobjectid":545,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
