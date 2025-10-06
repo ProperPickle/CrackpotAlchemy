@@ -122,9 +122,9 @@ class Door extends Phaser.GameObjects.Sprite implements Interactable {
     doorId: number;
     gameScene: Game;
     
-    constructor (scene: Phaser.Scene, id: string, x: number,  y: number, doorId: number, sprite: string, open: boolean = false) {
+    constructor (scene: Phaser.Scene, id: number, x: number,  y: number, doorId: number, sprite: string, open: boolean = false) {
         super(scene, x, y, sprite, 0);
-        this.id = Symbol(id);
+        this.id = id;
         this.position = { x, y };
         this.state = open ? 1 : 0;
         this.gameScene = scene as Game;
