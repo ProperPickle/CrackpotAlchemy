@@ -233,8 +233,9 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
+                if (!item.sprite.active) { item.isHeld = false; item.body.setVelocity(0) }
                 if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld &&
-                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY)) {
+                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY) && item.sprite.active) {
                     
                         item.isHeld = true
 

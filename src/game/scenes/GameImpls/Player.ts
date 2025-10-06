@@ -19,7 +19,7 @@ function addPlayer(){
 
     Game.prototype.createPlayer = function(){
         this.player = this.physics.add.sprite(100, 450, 'crackpot');
-        this.player.body.setSize(40, 56)
+        this.player.body.setSize(35, 50)
         this.player.setCollideWorldBounds(true);
         this.player.setDrag(0.5)
 

@@ -99,7 +99,7 @@ class Game extends Scene
 
         this.createAudio()
 
-        this.showPopup("Welcome brave adventurer!", 
+        this.showPopup("Crackpot alchemy balls", 
             10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
     }
 
