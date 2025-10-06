@@ -22,7 +22,7 @@ function addControllables(){
 
 
     Game.prototype.createInteractions = function(){
-        this.physics.add.collider(this.player, this.platforms);
+        this.physics.add.collider(this.player, this.walls);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
 
         let worldLeft = 0
@@ -122,7 +122,7 @@ function addControllables(){
             }
         })
 
-        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.platforms);
+        this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.walls);
 
 
         return item
@@ -139,6 +139,7 @@ function addControllables(){
                 const trashCan = new TrashCan(this, `trash${idx}`, x, y);
                 (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
                 this.trashCans.add(trashCan);
+                trashCan.setDepth(2);
                 // console.log(`Created trash can at (${x}, ${y})`);
                 
             });
@@ -154,6 +155,7 @@ function addControllables(){
                 const y = (obj.y ?? 0)-(obj.height ?? 0)/2;
                 const door = new Door(this, `door${idx}`, x, y, obj.id, obj.properties.open);
                 this.doors.add(door);
+                door.setDepth(2);
                 // console.log(`Created door at (${x}, ${y})`);
             });
         }
@@ -170,6 +172,7 @@ function addControllables(){
                 const bouncer = new Bouncer(this, `bouncer${idx}`, x, y, obj.properties[0].value, obj.properties[1].value);
                 (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
                 this.bouncers.add(bouncer);
+                bouncer.setDepth(2);
                 // console.log(`Created bouncer at (${x}, ${y})`);
             });
         }
@@ -177,6 +180,23 @@ function addControllables(){
         this.physics.add.collider(this.bouncers, this.cart);
         this.physics.add.collider(this.bouncers, this.itemsGroup);
         
+    }
+    Game.prototype.createDecor = function(){
+        //adding decor from object layer
+        const decorLayer = this.myMap.getObjectLayer('decor');
+        if(decorLayer && decorLayer.objects) {
+            decorLayer.objects.forEach((obj, idx) => {
+                const x = (obj.x ?? 0) + (obj.width ?? 0)/2;
+                const y = (obj.y ?? 0) - (obj.height ?? 0)/2;
+                console.log(obj.name);
+                const decor = this.add.image(x, y, obj.name ?? 'glass_shards');
+                decor.setDisplaySize((obj.width ?? decor.width), (obj.height ?? decor.height))
+                    decor.setFlipX(obj.flippedHorizontal ?? false);
+                    decor.setFlipY(obj.flippedVertical ?? false);
+                    decor.setDepth(0);
+                    // console.log(`Created decor at (${x}, ${y})`);
+            });
+        }
     }
 
     Game.prototype.controlItems = function(){
@@ -299,8 +319,8 @@ function addControllables(){
     
     Game.prototype.getAverageRayToWall = function(from, to) {
 
-        const tilemap = this.platforms.tilemap;
-        const layerIndex = this.platforms.layerIndex;
+        const tilemap = this.walls.tilemap;
+        const layerIndex = this.walls.layerIndex;
         const dir = to.clone().subtract(from);
         const maxDist = dir.length();
         const dirNorm = dir.clone().normalize();
@@ -346,7 +366,7 @@ function addControllables(){
         //changed to pointerdown so it shouldn't blow up the console
         this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             // Get the tile at the pointer's world position
-            const tile = this.platforms.getTileAtWorldXY(pointer.worldX, pointer.worldY);
+            const tile = this.walls.getTileAtWorldXY(pointer.worldX, pointer.worldY);
             if (tile) {
                 // Display the tile's index (for example, in the console or on-screen)
                 console.log("Tile index:", tile.index);

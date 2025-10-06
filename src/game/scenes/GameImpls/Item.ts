@@ -77,8 +77,8 @@ export class Item {
 
         for (let i = 0; i < steps; i++) {
             current.add(stepVec);
-            const tile = this.scene.platforms.tilemap.getTileAtWorldXY(
-                current.x, current.y, true, this.scene.camera, this.scene.platforms.layerIndex);
+            const tile = this.scene.walls.tilemap.getTileAtWorldXY(
+                current.x, current.y, true, this.scene.camera, this.scene.walls.layerIndex);
             if (tile && tile.collides) {
                 return true; // wall detected between player and item
             }

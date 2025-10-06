@@ -24,7 +24,7 @@ function addCart(){
         //.setSize(56, 56).setScale(1.2)
 
 
-        this.physics.add.collider(this.cart, this.platforms);
+        this.physics.add.collider(this.cart, this.walls);
         this.physics.add.collider(this.cart, this.player);
 
         this.cart.setDamping(false)

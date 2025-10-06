@@ -33,6 +33,7 @@ class Game extends Scene
     loadCart(){}
     loadInteractables(){}
     loadUIAssets(){}
+    loadDecor(){}
 
     craftSound: phaserAudio
     cartSound: phaserAudio
@@ -48,11 +49,12 @@ class Game extends Scene
         this.loadItems()
         this.loadCart()
         this.loadInteractables()
+        this.loadDecor()
         this.loadUIAssets()
     }
 
 
-    platforms: Phaser.Tilemaps.TilemapLayer;
+    walls: Phaser.Tilemaps.TilemapLayer;
     player:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
     myMap: Phaser.Tilemaps.Tilemap
@@ -66,6 +68,7 @@ class Game extends Scene
     createItems(){}
     createCart(){}
     createInteractables(){}
+    createDecor(){}
 
     // @ts-ignore
     createItem(x:number, y:number, key:itemKeys):Item{
@@ -99,6 +102,10 @@ class Game extends Scene
 
         this.createAudio()
 
+        this.createDecor()
+
+        this.showPopup("Welcome brave adventurer!", 
+            10, 10, 300, 100, 3000, 30)
         this.showPopup("Crackpot alchemy balls", 
             10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
     }
