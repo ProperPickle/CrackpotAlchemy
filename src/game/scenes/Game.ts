@@ -107,7 +107,7 @@ class Game extends Scene
 
         this.createCart()
 
-        this.createItems()
+        //this.createItems()
 
         this.createInteractables()
 
