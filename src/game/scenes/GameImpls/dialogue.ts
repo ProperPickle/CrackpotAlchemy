@@ -14,15 +14,14 @@ function addDialogue(){
             name = new Array(words.length).fill(name)
         let n = 0;
             let showCurPop = () => {
-                console.log(n);
                 if(n>=words.length)
                     return;
-                let message = words[n++]
+                let message = words[n]
                 if(interpret&&interpret[n]!=undefined)
                     message = message+"\n*"+interpret[n]+"*"
                 this.showPopup(message,
                 10, this.camera.height - 210, this.camera.width - 20, 200, duration, 30,
-                name[n-1],showCurPop)
+                name[n++],showCurPop)
             }
             if(Math.random()<probability)
                 showCurPop();
