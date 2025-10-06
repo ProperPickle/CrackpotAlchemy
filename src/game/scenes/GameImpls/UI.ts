@@ -1,5 +1,8 @@
 import {Game} from '../Game'
 function addUI():void{
+
+    let playerHasPopup: boolean = false;
+
     Game.prototype.loadUIAssets = function(){
         this.load.image('banner', 'assets/banner_classic_curtain.png');
         this.load.image('panel', 'assets/panel_grey_dark.png');
@@ -10,6 +13,11 @@ function addUI():void{
     Game.prototype.showPopup = function(message: string, x, y, width, height, duration = 2000, fontSize: number, name:string="", callback?:Function) {
         if(!callback)
             callback = () => {}
+
+        if (playerHasPopup) return
+
+        playerHasPopup = true
+
         const cam = this.camera
         // Create a resizable textured panel
         const panel = createResizablePanel(this, 'panel', width, height, 12);
@@ -63,6 +71,7 @@ function addUI():void{
                 ease: 'Cubic.In',
                 duration: 500,
                 onComplete: () => {
+                    playerHasPopup = false
                     panel.destroy()
                     callback()
                 },
