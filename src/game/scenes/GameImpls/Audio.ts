@@ -24,7 +24,7 @@ function addAudio(){
             this.themes.push(this.sound.add('theme'+i, {loop:false}))
         }
 
-        let currentSongIndex = 0;
+        let currentSongIndex = Phaser.Math.Between(0,numThemes-1);
 
         const playNextSong = () => {
             if (currentSongIndex < this.themes.length) {
