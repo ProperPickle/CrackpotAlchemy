@@ -124,7 +124,14 @@ function addControllables(){
 
         this.physics.add.collider(Array.from(this.items).map(it => it.sprite), this.walls);
 
-
+        switch(key){
+            case itemKeys.gold: this.writeDialogue(item.sprite, ["gold", "Ron"], ["Don't I look shiny?", "No. I found you in the trash."],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.heart_choc: this.writeDialogue(item.sprite, ["Chocolate", "Ron"], ["Would you eat me", "No. I found you in the trash."],
+                 undefined, 2500, .2);
+                break;
+        }
         return item
     }
 

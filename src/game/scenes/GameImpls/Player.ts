@@ -80,6 +80,8 @@ function addPlayer(){
             frames: [ { key: 'crackpot', frame: 17 } ],
             frameRate: 20,
         });
+
+        this.writeDialogue(this.player, "Ron", ["My name is Ron. I'm a wizard.\nThe voices in my head are real"], undefined, 2000)
     }
 
     Game.prototype.movePlayer = function(){
