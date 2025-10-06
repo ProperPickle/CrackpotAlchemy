@@ -30,25 +30,5 @@ export class MainMenu extends Scene
         }).on('pointerout', () => {
             this.title.setFill("#ffffff")
         });
-
-
-        let fullscreenB = this.add.text(970, 25, 'F', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).on('pointerover', () => {
-            fullscreenB.setFill("#ff4444")
-        }).on('pointerout', () => {
-            fullscreenB.setFill("#ffffff")
-        });
-
-        fullscreenB.setInteractive().on('pointerdown', () => {
-            if (this.scale.isFullscreen)
-                this.scale.stopFullscreen()
-            else{
-                this.scale.startFullscreen()
-            }
-            this.scale.refresh()
-        })
     }
 }

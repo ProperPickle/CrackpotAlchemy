@@ -46,7 +46,7 @@ const config: Phaser.Types.Core.GameConfig = {
             gravity: {x: 0, y: 0},
             debug: true
         }
-    },
+    }
 };
 
 const StartGame = (parent: string) => {

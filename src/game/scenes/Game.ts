@@ -6,6 +6,7 @@ import addCart from './GameImpls/Cart';
 import addAudio, { phaserAudio } from './GameImpls/Audio';
 import addUI from './GameImpls/UI';
 import addPlayer from './GameImpls/Player';
+import { addDialogue } from './GameImpls/dialogue';
 
 class Game extends Scene
 {
@@ -81,10 +82,13 @@ class Game extends Scene
     cartIsHeld: boolean = false;
     
     //@ts-ignore
-    showPopup(message: string, x:number, y:number,width:number, height:number, duration:number = 2000, fontSize: number) {}
+    showPopup(message: string, x, y, width, height, duration = 2000, fontSize: number, name:string, callback?:Function) {}
 
     createMagicBeams(){}
     updateMagicBeams(){}
+
+    restartB:Phaser.GameObjects.Text;
+    createRestartB(){}
 
     create (){
         //defined in world.ts
@@ -107,12 +111,12 @@ class Game extends Scene
 
         this.createDecor()
 
-        this.showPopup("Welcome brave adventurer!", 
-            10, 10, 300, 100, 3000, 30)
+        // this.showPopup("Welcome brave adventurer!", 10, 10, 300, 100, 3000, 30, "test name")
         this.showPopup("Crackpot alchemy balls", 
-            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30, "name2")
         
         this.createMagicBeams()
+        this.createRestartB();
     }
 
 
@@ -128,6 +132,9 @@ class Game extends Scene
     cartMovement(){}
     cartIsOccluded(): boolean { return false }
     updateCartFrame(){}
+
+    //@ts-ignore
+    writeDialogue(npc: Phaser.GameObjects.Sprite, name:string, words:Array<string>, interpret?:Array<string>, duration:number = 3000){}
 
     update() {
         //console.log(this.input.mousePointer.position)
@@ -147,11 +154,17 @@ class Game extends Scene
         this.updateMagicBeams()
     }
 }
-addWorld()
-addPlayer()
-addControllables()
-addCart()
-addAudio()
-addUI()
+
+export function addAll(){
+    addWorld()
+    addPlayer()
+    addControllables()
+    addCart()
+    addAudio()
+    addUI()
+    addDialogue()
+}
+
+addAll()
 
 export {Game}

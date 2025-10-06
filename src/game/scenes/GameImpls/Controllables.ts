@@ -57,13 +57,13 @@ function addControllables(){
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 40)
 
-            this.createItem(pos.x+200, pos.y+200, itemKeys.fries)
+            this.createItem(pos.x+200, pos.y+200, itemKeys.gold)
         }
         for (let i = 0; i < 3; i++) {
             let pos = new Phaser.Math.Vector2()
             Phaser.Math.RandomXY(pos, 80)
 
-            this.createItem(pos.x+400, pos.y+200, itemKeys.rat)
+            this.createItem(pos.x+400, pos.y+200, itemKeys.heart_choc)
         }
     }
 
@@ -173,6 +173,7 @@ function addControllables(){
                 (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
                 this.bouncers.add(bouncer);
                 bouncer.setDepth(2);
+                this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me happy"])
                 // console.log(`Created bouncer at (${x}, ${y})`);
             });
         }
@@ -226,6 +227,11 @@ function addControllables(){
         let rx = mx-px;
         let ry = my-py;
         let d = Math.sqrt(rx*rx+ry*ry)
+        if(d>200){
+            beam.setAlpha(0.1)
+        }else{
+            beam.setAlpha(.6)
+        }
         let theta = Math.atan(-ry/rx)
         let a:boolean = theta<0;
         let b:boolean = ry<0;

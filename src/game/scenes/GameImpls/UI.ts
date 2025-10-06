@@ -1,5 +1,4 @@
-import {Game} from '../Game'
-
+import {addAll, Game} from '../Game'
 function addUI():void{
     Game.prototype.loadUIAssets = function(){
         this.load.image('banner', 'assets/banner_classic_curtain.png');
@@ -8,7 +7,9 @@ function addUI():void{
         
     }
 
-    Game.prototype.showPopup = function(message: string, x, y, width, height, duration = 2000, fontSize: number) {
+    Game.prototype.showPopup = function(message: string, x, y, width, height, duration = 2000, fontSize: number, name:string="", callback?:Function) {
+        if(!callback)
+            callback = () => {}
         const cam = this.camera
         // Create a resizable textured panel
         const panel = createResizablePanel(this, 'panel', width, height, 12);
@@ -17,6 +18,19 @@ function addUI():void{
         panel.setPosition(x, cam.height + y)
         .setScrollFactor(0) // so it stays in place on screen
         .setDepth(1000);    // render above gameplay
+        
+        const nameText = this.add.text(75, 40, name, {
+            fontFamily: 'Arial',
+            fontSize: fontSize + 'px',
+            // fontStyle: 'bold',
+            color: '#000000',
+            align: 'left',
+            wordWrap: { width: width - fontSize * 2 },
+            resolution: 4,
+
+        }).setOrigin(0.5);
+
+        panel.add(nameText);
 
         // Add some centered text
         const text = this.add.text(width/2, height/2, message, {
@@ -48,13 +62,31 @@ function addUI():void{
                 y: 3000,  // slide off-screen again
                 ease: 'Cubic.In',
                 duration: 500,
-                onComplete: () => panel.destroy(),
+                onComplete: () => {
+                    panel.destroy()
+                    callback()
+                },
             });
         });
     }
 
 
+    Game.prototype.createRestartB = function(){
+        this.restartB = this.add.text(965, 20, 'R', {
+            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        }).setScrollFactor(0)
+        .on('pointerover', () => {
+            this.restartB.setFill("#ff4444")
+        }).on('pointerout', () => {
+            this.restartB.setFill("#ffffff")
+        });
 
+        this.restartB.setInteractive().on('pointerup', () => {
+            location.reload()
+        })
+    }
 
 }
 export default addUI

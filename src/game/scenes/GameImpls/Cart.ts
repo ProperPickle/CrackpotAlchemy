@@ -235,8 +235,8 @@ function addCart(){
 
         for (let i = 0; i < steps; i++) {
             current.add(stepVec);
-            const tile = this.platforms.tilemap.getTileAtWorldXY(
-                current.x, current.y, true, this.camera, this.platforms.layerIndex);
+            const tile = this.walls.tilemap.getTileAtWorldXY(
+                current.x, current.y, true, this.camera, this.walls.layerIndex);
             if (tile && tile.collides) {
                 return true; // wall detected between player and item
             }
