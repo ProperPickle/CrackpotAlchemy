@@ -21,7 +21,7 @@ function addCart(){
 
     Game.prototype.createCart = function(){
         this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
-        .setSize(56, 56).setScale(1.2)
+        //.setSize(56, 56).setScale(1.2)
 
         this.physics.add.collider(this.cart, this.platforms);
         this.physics.add.collider(this.cart, this.player);
@@ -238,15 +238,5 @@ function addCart(){
 
         return false; // no wall in between
     }
-
-    Game.prototype.updateCartFrame = function(){
-        // if(this.cart.body.velocity.x>0){
-        //     this.cart.setFrame(1)
-        // }else if(this.cart.body.velocity.x<0){
-        //     this.cart.setFrame(0)
-        // }
-        this.cart.setFlipX(false)
-    }
-
 }
 export default addCart
