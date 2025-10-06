@@ -257,12 +257,36 @@ function addControllables(){
                 (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
                 this.bouncers.add(bouncer);
                 bouncer.setDepth(2);
-                this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me happy"])
                 // console.log(`Created bouncer at (${x}, ${y})`);
                 switch(obj.name){
                     case "Bouncer1":
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me happy"])
                         bouncer.triggerDialogue = function(){
-                            this.gameScene.showDialogue("Security Guard", ["wow I am dead now again"], undefined, 2500)
+                            this.gameScene.showDialogue("Security Guard", ["I am so happy, that its chill if you come through"], undefined, 2500)
+                        }
+                    break;
+                    case "Bouncer2":
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am too excited", "go find something to make me sad"])
+                        bouncer.triggerDialogue = function(){
+                            this.gameScene.showDialogue("Security Guard", ["Im too sad to stop you"], undefined, 2500)
+                        }
+                    break;
+                    case "Bouncer3":
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very bored", "go find something to make me angry"])
+                        bouncer.triggerDialogue = function(){
+                            this.gameScene.showDialogue("Security Guard", ["I can't believe she broke up with me!\nYeah whatever, you can go, just don't bother me"], undefined, 2500)
+                        }
+                    break;
+                    case "Bouncer4":
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make die"])
+                        bouncer.triggerDialogue = function(){
+                            this.gameScene.showDialogue("Security Guard", ["wow I am dead now"], undefined, 2500)
+                        }
+                    break;
+                    case "Bouncer5":
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me jello"])
+                        bouncer.triggerDialogue = function(){
+                            this.gameScene.showDialogue("Security Guard", ["Bro, you forgot to use this potion on Amy. Now you have to restart the game.\nahahahhahah!"], undefined, 2500)
                         }
                     break;
                 }
