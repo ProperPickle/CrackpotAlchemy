@@ -35,8 +35,10 @@ class Preloader extends Scene
         //  Load the assets for the game - Replace with your own assets
         //this.load.setPath('assets');
 
-        this.load.image('logo', 'assets/logo.png');
+        this.load.image('title', 'assets/title.png');
        
+        this.load.image('startB', 'assets/startB.png')
+
         this.loadAudio()
     }
 

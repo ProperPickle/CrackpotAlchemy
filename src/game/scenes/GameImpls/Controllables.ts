@@ -22,6 +22,13 @@ function addControllables(){
         }
     }
 
+    Game.prototype.loadKen = function(){
+        this.load.spritesheet(
+            'Ken',
+            'assets/Ken.png',
+            {frameWidth: 64, frameHeight:64}
+        )
+    }
 
     Game.prototype.createInteractions = function(){
         this.physics.add.collider(this.player, this.walls);

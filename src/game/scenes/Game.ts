@@ -35,6 +35,7 @@ class Game extends Scene
     loadInteractables(){}
     loadUIAssets(){}
     loadDecor(){}
+    loadKen(){}
 
     craftSound: phaserAudio
     cartSound: phaserAudio
@@ -52,6 +53,7 @@ class Game extends Scene
         this.loadInteractables()
         this.loadDecor()
         this.loadUIAssets()
+        this.loadKen()
     }
 
 
