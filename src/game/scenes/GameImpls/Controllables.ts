@@ -177,7 +177,7 @@ function addControllables(){
             doorLayer.objects.forEach((obj,idx) => {
                 const x = (obj.x ?? 0)+(obj.width ?? 0)/2;
                 const y = (obj.y ?? 0)-(obj.height ?? 0)/2;
-                const door = new Door(this, idx, x, y, obj.id, obj.name.slice(0,4), obj.properties.open);
+                const door = new Door(this, idx, x, y, obj.id, obj.name.slice(0,4), obj.properties[0].value);
                 this.doors.add(door);
                 door.setDepth(2);
                 // console.log(`Created door at (${x}, ${y})`);
@@ -221,7 +221,6 @@ function addControllables(){
             decorLayer.objects.forEach((obj) => {
                 const x = (obj.x ?? 0) + (obj.width ?? 0)/2;
                 const y = (obj.y ?? 0) - (obj.height ?? 0)/2;
-                console.log(obj.name);
                 const decor = this.add.image(x, y, obj.name ?? 'glass_shards');
                 decor.setDisplaySize((obj.width ?? decor.width), (obj.height ?? decor.height))
                     decor.setFlipX(obj.flippedHorizontal ?? false);
