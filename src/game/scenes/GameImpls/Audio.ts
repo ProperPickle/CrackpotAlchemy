@@ -1,6 +1,6 @@
 import {Game} from '../Game'
 import { Preloader } from '../Preloader';
-export const numThemes = 3;
+export const numThemes = 4;
 let audioOn:boolean = true;
 
 
