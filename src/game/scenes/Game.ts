@@ -139,7 +139,7 @@ class Game extends Scene
     updateCartFrame(){}
 
     //@ts-ignore
-    showDialogue(name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = 1){}
+     showDialogue(name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = 1){}
     //@ts-ignore
     writeDialogue(npc: Phaser.GameObjects.Sprite, name:string|Array<string>, words:Array<string>, interpret?:Array<string>,duration:number = 3000, probability:number = .2){}
 

@@ -278,7 +278,7 @@ function addControllables(){
                         }
                     break;
                     case "Bouncer4":
-                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make die"])
+                        this.writeDialogue(bouncer, "Bouncer", ["not allowed in here chump", "so scram"], ["I am very grumpy", "go find something to make me die"])
                         bouncer.triggerDialogue = function(){
                             this.gameScene.showDialogue("Security Guard", ["wow I am dead now"], undefined, 2500)
                         }
