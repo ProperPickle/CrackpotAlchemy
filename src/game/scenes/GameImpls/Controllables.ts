@@ -154,12 +154,18 @@ function addControllables(){
             trashCanLayer.objects.forEach((obj, idx) => {
                 const x = (obj.x ?? 0) + 30;
                 const y = (obj.y ?? 0) + 30 - (obj.height ?? 0);
-                const trashCan = new TrashCan(this, idx, x, y);
-                (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
-                this.trashCans.add(trashCan);
-                trashCan.setDepth(2);
-                // console.log(`Created trash can at (${x}, ${y})`);
-                
+                if(obj.properties && obj.properties[0]) {
+                    const heldItems = obj.properties[0].value.split(",").map((item: string) => item.trim() as itemKeys);
+                    const trashCan = new TrashCan(this, idx, x, y, heldItems);
+                    (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
+                    this.trashCans.add(trashCan);
+                    trashCan.setDepth(2);
+                } else {
+                    const trashCan = new TrashCan(this, idx, x, y);
+                    (trashCan.body as Phaser.Physics.Arcade.Body).setSize(trashCan.width/2, 20);
+                    this.trashCans.add(trashCan);
+                    trashCan.setDepth(2);
+                }
             });
         }   
         this.physics.add.collider(this.trashCans, this.player);
