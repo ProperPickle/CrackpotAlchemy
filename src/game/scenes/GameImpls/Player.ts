@@ -31,12 +31,22 @@ function addPlayer(){
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'right_still',
+            frames: [ { key: 'crackpot', frame: 5 } ],
+            frameRate: 20,
+        });
 
         this.anims.create({
             key: 'up',
             frames: this.anims.generateFrameNumbers('crackpot', { start: 23, end: 18 }),
             frameRate: 10,
             repeat: -1
+        });
+        this.anims.create({
+            key: 'up_still',
+            frames: [ { key: 'crackpot', frame: 23 } ],
+            frameRate: 20
         });
         
         this.anims.create({
@@ -45,6 +55,11 @@ function addPlayer(){
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'down_still',
+            frames: [ { key: 'crackpot', frame: 17 } ],
+            frameRate: 20
+        });
 
         this.anims.create({
             key: 'left',
@@ -52,6 +67,12 @@ function addPlayer(){
             frameRate: 10,
             repeat: -1
         });
+        this.anims.create({
+            key: 'left_still',
+            frames: [ { key: 'crackpot', frame: 11 } ],
+            frameRate: 20,
+        });
+
 
         this.anims.create({
             key: 'face',
@@ -110,12 +131,27 @@ function addPlayer(){
             if (move_dir.dot(new Phaser.Math.Vector2(0,1)) > 0) {
                 this.player.anims.play('down', true)
             } else if (move_dir.dot(new Phaser.Math.Vector2(0,1)) == 0) {
-                this.player.anims.play('face')
+                //this.player.anims.play('face')
             } else {
                 this.player.anims.play('up', true)
             }
         } else {
             this.player.anims.play('left', true)
+        }
+
+        if (move_dir.length() == 0) {
+            if (this.player.anims.currentAnim == this.anims.get('right')) {
+                this.player.anims.play('right_still')
+            }
+            if (this.player.anims.currentAnim == this.anims.get('left')) {
+                this.player.anims.play('left_still')
+            }
+            if (this.player.anims.currentAnim == this.anims.get('up')) {
+                this.player.anims.play('up_still')
+            }
+            if (this.player.anims.currentAnim == this.anims.get('down')) {
+                this.player.anims.play('down_still')
+            }
         }
 
         this.player.setVelocity(speed * move_dir.x, speed * move_dir.y);

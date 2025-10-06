@@ -5,6 +5,11 @@ export enum itemKeys{
     rat = "rat",
     can = "can",
     fries = "fries",
+    happy_pot = "happy_pot",
+    sad_pot = "sad_pot",
+    angry_pot = "angry_pot",
+    death_pot = "death_pot",
+    jelly_pot = "jelly_pot"    
 }
 
 export class Item {
@@ -89,6 +94,8 @@ export function checkCraft(a:itemKeys, b:itemKeys):itemKeys | null{
             switch(b){
                 case itemKeys.rat:
                     return itemKeys.can;
+                case itemKeys.can:
+                    return itemKeys.happy_pot;
             }    
         break;
     }
