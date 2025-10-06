@@ -116,8 +116,8 @@ class Game extends Scene
         this.createDecor()
 
         // this.showPopup("Welcome brave adventurer!", 10, 10, 300, 100, 3000, 30, "test name")
-        //this.showPopup("Crackpot alchemy balls", 
-        //    10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30, "name2")
+        this.showPopup("Click on the npcs to figure it out", 
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30, "name2")
         
         this.createMagicBeams()
         this.createRestartB();
