@@ -21,7 +21,7 @@
   </data>
  </layer>
  <objectgroup id="5" name="doors">
-  <object id="20" gid="48" x="128" y="640" width="64" height="64">
+  <object id="20" name="Door1" gid="48" x="128" y="640" width="64" height="64">
    <properties>
     <property name="open" type="bool" value="false"/>
    </properties>
@@ -37,7 +37,7 @@
   <properties>
    <property name="connected_door" type="object" value="20"/>
   </properties>
-  <object id="19" gid="71" x="64.6667" y="564" width="64" height="64">
+  <object id="19" name="Bouncer1" gid="71" x="64.6667" y="564" width="64" height="64">
    <properties>
     <property name="connected_door" type="object" value="20"/>
     <property name="needed_item" value="can"/>
