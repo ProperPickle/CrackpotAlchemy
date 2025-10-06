@@ -21,6 +21,7 @@ function addCart(){
 
     Game.prototype.createCart = function(){
         this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
+        .setSize(56, 56).setScale(1.2)
 
         this.physics.add.collider(this.cart, this.platforms);
         this.physics.add.collider(this.cart, this.player);
@@ -42,8 +43,8 @@ function addCart(){
                 return Math.random()<.5?-n:n
             }
             
-            const min_buffer = 35
-            const max_buffer = 60;
+            const min_buffer = 50
+            const max_buffer = 80;
 
             this.hiddenItems.forEach((e:Item)=>{
                 e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
