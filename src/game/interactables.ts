@@ -122,9 +122,9 @@ class Door extends Phaser.GameObjects.Sprite implements Interactable {
     doorId: number;
     gameScene: Game;
     
-    constructor (scene: Phaser.Scene, id: number, x: number, y: number, doorId: number, open: boolean = false) {
-        super(scene, x, y, 'door', 0);
-        this.id = id;
+    constructor (scene: Phaser.Scene, id: string, x: number,  y: number, doorId: number, sprite: string, open: boolean = false) {
+        super(scene, x, y, sprite, 0);
+        this.id = Symbol(id);
         this.position = { x, y };
         this.state = open ? 1 : 0;
         this.gameScene = scene as Game;
@@ -133,18 +133,33 @@ class Door extends Phaser.GameObjects.Sprite implements Interactable {
         scene.physics.add.existing(this);
         (this.body as Phaser.Physics.Arcade.Body).setImmovable(true);
         this.setInteractive();
-        this.anims.create({
+        if (sprite === 'door') {
+            this.anims.create({
             key: 'door_open',
             frames: this.anims.generateFrameNumbers('door', { start: 0, end: 3 }),
             frameRate: 12,
             repeat: 0
-        });
-        this.anims.create({
-            key: 'door_close',
-            frames: this.anims.generateFrameNumbers('door', { start: 3, end: 0 }),
-            frameRate: 12,
-            repeat: 0
-        });
+            });
+            this.anims.create({
+                key: 'door_close',
+                frames: this.anims.generateFrameNumbers('door', { start: 3, end: 0 }),
+                frameRate: 12,
+                repeat: 0
+            });
+        } else if (sprite === 'gate') {
+            this.anims.create({
+                key: 'door_open',
+                frames: this.anims.generateFrameNumbers('gate', { start: 0, end: 2}),
+                frameRate: 12,
+                repeat: 0
+            });
+            this.anims.create({
+                key: 'door_close',
+                frames: this.anims.generateFrameNumbers('gate', { start: 2, end: 0 }),
+                frameRate: 12,
+                repeat: 0
+            });
+        }
         this.on('pointerdown', () => {
             const objX = this.x;
             const objY = this.y;

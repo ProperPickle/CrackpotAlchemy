@@ -171,7 +171,7 @@ function addControllables(){
             doorLayer.objects.forEach((obj,idx) => {
                 const x = (obj.x ?? 0)+(obj.width ?? 0)/2;
                 const y = (obj.y ?? 0)-(obj.height ?? 0)/2;
-                const door = new Door(this, idx, x, y, obj.id, obj.properties.open);
+                const door = new Door(this, `door${idx}`, x, y, obj.id, obj.name.slice(0,4), obj.properties.open);
                 this.doors.add(door);
                 door.setDepth(2);
                 // console.log(`Created door at (${x}, ${y})`);
