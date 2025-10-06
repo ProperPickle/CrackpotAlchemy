@@ -33,6 +33,8 @@ function addCart(){
         this.cart.body.setSize(30, 30)
         this.cart.setBounce(0.2)
 
+        this.writeDialogue(this.cart, "Cart", ["I can hold items"], undefined, 1500)
+
         enableDoubleClick(this.cart, this, () =>{
 
             if (this.cart.body.position.distance(this.player.body.position) > maxRadius * 2) return

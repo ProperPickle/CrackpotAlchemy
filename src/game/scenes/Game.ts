@@ -117,7 +117,7 @@ class Game extends Scene
 
         // this.showPopup("Welcome brave adventurer!", 10, 10, 300, 100, 3000, 30, "test name")
         this.showPopup("Click on the npcs to figure it out", 
-            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30, "name2")
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30, "A voice in your head")
         
         this.createMagicBeams()
         this.createRestartB();
