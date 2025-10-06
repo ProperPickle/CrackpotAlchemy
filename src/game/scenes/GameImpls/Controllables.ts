@@ -199,6 +199,42 @@ function addControllables(){
         }
     }
 
+    let beam:Phaser.GameObjects.IsoTriangle;
+    let beamOn: boolean = false;
+    Game.prototype.createMagicBeams = function(){
+        beam = this.add.isotriangle(0, 0, 30).setFillStyle(0xdd00dd,0xdd00dd,0xdd00dd)
+        this.input.on('pointerdown', () => {
+            beamOn = true;
+        });
+
+        this.input.on('pointerup', () => {
+            beamOn = false
+        }) 
+    }
+
+    Game.prototype.updateMagicBeams = function(){
+        if(!beamOn){
+            beam.setActive(false).setVisible(false);
+            return;
+        }
+        beam.setActive(true).setVisible(true);
+        const mouse = this.input.mousePointer;
+        let mx = mouse.worldX;
+        let my = mouse.worldY;
+        let px = this.player.getWorldPoint().x
+        let py = this.player.getWorldPoint().y
+        let rx = mx-px;
+        let ry = my-py;
+        let d = Math.sqrt(rx*rx+ry*ry)
+        let theta = Math.atan(-ry/rx)
+        let a:boolean = theta<0;
+        let b:boolean = ry<0;
+        // XOR
+        (+a^+b)?1:d*=-1
+        beam.setX(mx).setY(my).height=-d
+        beam.setRotation(-theta+Math.PI/2).setAlpha(.6)
+    }
+
     Game.prototype.controlItems = function(){
         const mouse = this.input.mousePointer;
         if (!mouse) return;

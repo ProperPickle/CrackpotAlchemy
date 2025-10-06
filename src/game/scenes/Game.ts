@@ -83,6 +83,9 @@ class Game extends Scene
     //@ts-ignore
     showPopup(message: string, x:number, y:number,width:number, height:number, duration:number = 2000, fontSize: number) {}
 
+    createMagicBeams(){}
+    updateMagicBeams(){}
+
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -108,6 +111,8 @@ class Game extends Scene
             10, 10, 300, 100, 3000, 30)
         this.showPopup("Crackpot alchemy balls", 
             10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
+        
+        this.createMagicBeams()
     }
 
 
@@ -138,6 +143,8 @@ class Game extends Scene
         //this.fpsText.setText(`FPS: ${Math.floor(this.game.loop.actualFps)}`);
         this.cartMovement()
         this.updateCartFrame()
+
+        this.updateMagicBeams()
     }
 }
 addWorld()
