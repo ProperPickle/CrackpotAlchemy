@@ -50,6 +50,7 @@ class Game extends Scene
         this.loadCart()
         this.loadInteractables()
         this.loadDecor()
+        this.loadUIAssets()
     }
 
 
@@ -105,6 +106,8 @@ class Game extends Scene
 
         this.showPopup("Welcome brave adventurer!", 
             10, 10, 300, 100, 3000, 30)
+        this.showPopup("Crackpot alchemy balls", 
+            10, this.camera.height - 210, this.camera.width - 20, 200, 3000, 30)
     }
 
 
@@ -118,6 +121,7 @@ class Game extends Scene
     checkIfItemBehindWall(item: any, buffer: number = 8): boolean {throw new Error("Not implemented")}
 
     cartMovement(){}
+    cartIsOccluded(): boolean { return false }
     updateCartFrame(){}
 
     update() {

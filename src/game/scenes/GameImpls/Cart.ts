@@ -21,7 +21,8 @@ function addCart(){
 
     Game.prototype.createCart = function(){
         this.cart = this.physics.add.sprite(400, 400, 'cart', 1).setFlipX(false)
-        .setSize(56, 56).setScale(1.2)
+        //.setSize(56, 56).setScale(1.2)
+
 
         this.physics.add.collider(this.cart, this.walls);
         this.physics.add.collider(this.cart, this.player);
@@ -29,12 +30,14 @@ function addCart(){
         this.cart.setDamping(false)
         this.cart.setDrag(.5)
         this.cart.setCollideWorldBounds(true)
+        this.cart.body.setSize(30, 30)
         this.cart.setBounce(0.2)
 
         enableDoubleClick(this.cart, this, () =>{
 
             if (this.cart.body.position.distance(this.player.body.position) > maxRadius * 2) return
 
+            
             function rand(min: number, max: number): number {
                 return Math.random() * (max - min) + min;
             }
@@ -43,13 +46,16 @@ function addCart(){
                 return Math.random()<.5?-n:n
             }
             
-            const min_buffer = 50
-            const max_buffer = 80;
+            const min_buffer = 300
+            const max_buffer = 300;
+            
 
             this.hiddenItems.forEach((e:Item)=>{
-                e.sprite.setPosition(this.cart.x+rSign(rand(min_buffer,max_buffer)),
-                this.cart.y+rSign(rand(min_buffer,max_buffer)))
+                e.sprite.setPosition(this.cart.x,//+rSign(rand(min_buffer,max_buffer)),
+                this.cart.y)//+rSign(rand(min_buffer,max_buffer)))
+                e.sprite.setVelocity(rSign(rand(min_buffer,max_buffer)),rSign(rand(min_buffer,max_buffer)))
                 e.sprite.setActive(true).setVisible(true)
+                e.exitCartDelay = 50
             })
             this.hiddenItems.clear()
         })
@@ -120,6 +126,7 @@ function addCart(){
                 && this.cart.getBounds().contains(mouse.worldX, mouse.worldY))
                 if (mouseHeldTime == 10)
                 this.cartIsHeld = true
+                //this.items.forEach((it) => { if (it.isHeld == true)  it.drop() })
             
         } else {
             mouseHeldTime = 0
@@ -155,11 +162,11 @@ function addCart(){
                 this.cart.body.velocity.x += (desiredVelocity.x - this.cart.body.velocity.x) * k;
                 this.cart.body.velocity.y += (desiredVelocity.y - this.cart.body.velocity.y) * k;
 
-                /*
-                if (this.checkIfItemBehindWall(this.cart)) {
+                
+                if (this.cartIsOccluded()) {
                     this.cartIsHeld = false;
                     this.cart.setVelocity(0)
-                }*/
+                }
 
                 let cartAngle = currentAngle * Phaser.Math.RAD_TO_DEG
                 if ((270 < cartAngle) || (cartAngle < 90))
@@ -210,14 +217,32 @@ function addCart(){
         });
     }
 
-    Game.prototype.updateCartFrame = function(){
-        // if(this.cart.body.velocity.x>0){
-        //     this.cart.setFrame(1)
-        // }else if(this.cart.body.velocity.x<0){
-        //     this.cart.setFrame(0)
-        // }
-        this.cart.setFlipX(false)
-    }
+    Game.prototype.cartIsOccluded = function (buffer: number = 8) {
+        //if (item.body == null) return false
+        const from = this.player.body.position;
+        const to = this.cart.body.position;
 
+        const dir = to.clone().subtract(from);
+        const maxDist = Math.max(0, dir.length() - buffer); // subtract buffer
+        if (maxDist <= 0) return false; // item is too close, don't drop
+
+        const dirNorm = dir.clone().normalize();
+        const step = 4;
+        const steps = Math.ceil(maxDist / step);
+        const stepVec = dirNorm.clone().scale(step);
+
+        let current = from.clone();
+
+        for (let i = 0; i < steps; i++) {
+            current.add(stepVec);
+            const tile = this.platforms.tilemap.getTileAtWorldXY(
+                current.x, current.y, true, this.camera, this.platforms.layerIndex);
+            if (tile && tile.collides) {
+                return true; // wall detected between player and item
+            }
+        }
+
+        return false; // no wall in between
+    }
 }
 export default addCart

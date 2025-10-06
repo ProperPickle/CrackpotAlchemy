@@ -80,7 +80,7 @@ function addControllables(){
         this.itemsGroup.add(item.sprite)
         
         this.physics.add.overlap(this.cart, item.sprite, ()=>{
-            if(!item.sprite.active)
+            if(!item.sprite.active || item.exitCartDelay > 0)
                 return;
             this.cartSound.play()
             item.sprite.setActive(false).setVisible(false)
@@ -253,8 +253,10 @@ function addControllables(){
 
             // Loop all items to check for clicks
             for (let item of this.items) {
+                if (!item.sprite.active) { item.isHeld = false; item.body.setVelocity(0) }
                 if (item.sprite.getBounds().contains(clampedMousePos.x, clampedMousePos.y) && !item.isHeld &&
-                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY)) {
+                    item.sprite.getBounds().contains(mouse.worldX, mouse.worldY) && item.sprite.active &&
+                    item.exitCartDelay < 30) {
                     
                         item.isHeld = true
 
@@ -266,7 +268,8 @@ function addControllables(){
             }
             }
         } else {
-            this.items.forEach((item) => { if (item.isHeld) 
+            this.items.forEach((item) => { 
+                if (item.isHeld) 
                 item.isHeld = false
                 item.isThrown = true
              } )
@@ -274,6 +277,8 @@ function addControllables(){
         
         // Move currently dragged objects
         for (let item of this.items) {
+
+            if (item.exitCartDelay > 0) item.exitCartDelay--
             //if (item.body == null) continue
 
             if (item.isHeld) {
