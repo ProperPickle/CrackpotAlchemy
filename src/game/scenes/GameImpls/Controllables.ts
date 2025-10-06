@@ -30,6 +30,20 @@ function addControllables(){
         )
     }
 
+    Game.prototype.createKen = function(){
+        this.amy = this.physics.add.sprite(650, 540, 'Ken')//.setScale(.1)
+
+        this.writeDialogue(this.amy, ["Amy", "Amy", "Ron"],
+             ["Hey",
+            "You hit your head really hard yesteday.\nAre you okay?",
+             "You shoulds sit down", 
+             "No."],
+             ["Amy has a helmet. This is normal",
+                "Amy is trying to convince me that it was all just a dream", 
+                "Amy is trying to kill me.\nI must kill her first",
+                 "I should make a potion that can kill Amy"], 3000, 1);
+    }
+
     Game.prototype.createInteractions = function(){
         this.physics.add.collider(this.player, this.walls);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
@@ -142,9 +156,55 @@ function addControllables(){
             case itemKeys.heart_choc: this.writeDialogue(item.sprite, ["Chocolate", "Ron"], ["Would you eat me", "No. I found you in the trash."],
                  undefined, 2500, .2);
                 break;
+            case itemKeys.broken_bottle: this.writeDialogue(item.sprite, ["Broken Bottle"], ["I bring back fond memories, don’t I?"],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.rat: this.writeDialogue(item.sprite, ["Rat"], ["How’ve you been roomie?"],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.death_pot: this.writeDialogue(item.sprite, ["Death Potion"], ["Drinking toxic waste and gasoline is a great idea, I wish I’d thought of it!"],
+                 undefined, 3000, .2);
+                break;
+            case itemKeys.gold: this.writeDialogue(item.sprite, "Gold", ["Wouldn’t you like to slather me across some warm toast"],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.mystery_sludge: this.writeDialogue(item.sprite, ["Mystery Sludge"], ["I was a soup once."],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.sad_pot: this.writeDialogue(item.sprite, ["Sad Potion"], ["You look as miserable as I feel."],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.saddie_meal: this.writeDialogue(item.sprite, ["Saddie Meal"], ["I’ve only been in here for a few days, I’m sure I taste fine."],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.toxic_waste: this.writeDialogue(item.sprite, ["Toxic Waste"], ["Really, I’m not toxic. Ask the cat if he’s alive or not."],
+                 undefined, 2500, .2);
+                break;
+            case itemKeys.gas: this.writeDialogue(item.sprite, ["Gasolin"], ["Yummy in your tummy"],
+                 undefined, 2500, .2);
+                break;
         }
+
+        if(item.name == itemKeys.jelly_pot){
+            this.physics.add.overlap(this.amy, item.sprite, () => {
+
+                if(!GameOver){
+                    this.showDialogue("Amy",
+                    ["Ohh looks tasty. Can I have some?",
+                    ""],["All according to plan",
+                        "Amy dies"], 2500);
+                    setTimeout(()=>{
+                        alert("I beat Ron Quixote, and all I got was this shitty alert")
+                    },6000)
+                }
+                GameOver = true
+            })
+        }
+
         return item
     }
+
+    let GameOver = false;
 
     Game.prototype.createInteractables = function(){
         //adding trashcans from object layer
