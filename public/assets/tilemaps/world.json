@@ -25,7 +25,7 @@
                  "gid":48,
                  "height":64,
                  "id":20,
-                 "name":"",
+                 "name":"Door1",
                  "properties":[
                         {
                          "name":"open",
@@ -113,12 +113,17 @@
                  "gid":71,
                  "height":64,
                  "id":19,
-                 "name":"",
+                 "name":"Bouncer1",
                  "properties":[
                         {
                          "name":"connected_door",
                          "type":"object",
                          "value":20
+                        }, 
+                        {
+                         "name":"needed_item",
+                         "type":"string",
+                         "value":"can"
                         }],
                  "rotation":0,
                  "type":"",
@@ -191,7 +196,7 @@
         {
          "columns":1,
          "firstgid":71,
-         "image":"..\/Bouncer_Neutral_LD58.png",
+         "image":"..\/bouncer_neutral.png",
          "imageheight":64,
          "imagewidth":64,
          "margin":0,

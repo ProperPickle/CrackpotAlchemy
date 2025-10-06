@@ -1,5 +1,5 @@
 import {Game} from '../Game'
-import {TrashCan} from '../../interactables';
+import {Bouncer, TrashCan, Door} from '../../interactables';
 import { checkCraft, Item , itemKeys } from './Item';
 
 
@@ -143,15 +143,31 @@ function addControllables(){
         }   
         this.physics.add.collider(this.trashCans, this.player);
         this.physics.add.collider(this.trashCans, this.cart);
+        //adding doors from object layer
+        this.doors = this.physics.add.group({immovable: true});
+        const doorLayer = this.myMap.getObjectLayer('doors');
+        if(doorLayer && doorLayer.objects) {
+            doorLayer.objects.forEach((obj,idx) => {
+                const x = (obj.x ?? 0)+(obj.width ?? 0)/2;
+                const y = (obj.y ?? 0)-(obj.height ?? 0)/2;
+                const door = new Door(this, `door${idx}`, x, y, obj.id, obj.properties.open);
+                this.doors.add(door);
+                // console.log(`Created door at (${x}, ${y})`);
+            });
+        }
+        this.physics.add.collider(this.doors, this.player);
+        this.physics.add.collider(this.doors, this.cart);
+        this.physics.add.collider(this.doors, this.itemsGroup);
         //adding bouncers from object layer
         this.bouncers = this.physics.add.group({immovable: true});
         const bouncerLayer = this.myMap.getObjectLayer('bouncers');
         if(bouncerLayer && bouncerLayer.objects) {
-            bouncerLayer.objects.forEach((obj) => {
+            bouncerLayer.objects.forEach((obj,idx) => { 
                 const x = (obj.x ?? 0) + 30;
                 const y = (obj.y ?? 0) + 30 - (obj.height ?? 0);
-                const bouncer = this.bouncers.create(x, y, 'bouncer');
+                const bouncer = new Bouncer(this, `bouncer${idx}`, x, y, obj.properties[0].value, obj.properties[1].value);
                 (bouncer.body as Phaser.Physics.Arcade.Body).setSize(40, 40);
+                this.bouncers.add(bouncer);
                 // console.log(`Created bouncer at (${x}, ${y})`);
             });
         }
