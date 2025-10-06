@@ -30,6 +30,20 @@ function addControllables(){
         )
     }
 
+    Game.prototype.createKen = function(){
+        this.amy = this.physics.add.sprite(650, 540, 'Ken')//.setScale(.1)
+
+        this.writeDialogue(this.amy, ["Amy", "Amy", "Ron"],
+             ["Hey",
+            "You hit your head really hard yesteday.\nAre you okay?",
+             "You shoulds sit down", 
+             "No."],
+             ["Amy has a helmet. This is normal",
+                "Amy is trying to convince me that it was all just a dream", 
+                "Amy is trying to kill me.\nI must kill her first",
+                 "I should make a potion that can kill Amy"], 3000, 1);
+    }
+
     Game.prototype.createInteractions = function(){
         this.physics.add.collider(this.player, this.walls);
         this.camera.startFollow(this.player, true, 0.5, 0.5);
@@ -143,8 +157,27 @@ function addControllables(){
                  undefined, 2500, .2);
                 break;
         }
+
+        if(item.name == itemKeys.jelly_pot){
+            this.physics.add.overlap(this.amy, item.sprite, () => {
+
+                if(!GameOver){
+                    this.showDialogue("Amy",
+                    ["Ohh looks tasty. Can I have some?",
+                    ""],["All according to plan",
+                        "Amy dies"], 2500);
+                    setTimeout(()=>{
+                        alert("I beat Ron Quixote, and all I got was this shitty alert")
+                    },6000)
+                }
+                GameOver = true
+            })
+        }
+
         return item
     }
+
+    let GameOver = false;
 
     Game.prototype.createInteractables = function(){
         //adding trashcans from object layer

@@ -44,8 +44,6 @@ class Game extends Scene
 
     preload(){
         this.loadSimpleBgAssets()
-        /*this.load.image('star', 'assets/star.png');
-        this.load.image('bomb', 'assets/bomb.png');*/
         this.loadPlayer()
         this.loadMap()
         this.loadItems()
@@ -62,6 +60,8 @@ class Game extends Scene
 
     myMap: Phaser.Tilemaps.Tilemap
     tileset: Phaser.Tilemaps.Tileset
+
+    amy: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody
 
     createSimpleBgAssets(){}
     createPlayer(){}
@@ -92,6 +92,8 @@ class Game extends Scene
     restartB:Phaser.GameObjects.Text;
     createRestartB(){}
 
+    createKen(){}
+
     create (){
         //defined in world.ts
         this.createSimpleBgAssets()
@@ -119,6 +121,7 @@ class Game extends Scene
         
         this.createMagicBeams()
         this.createRestartB();
+        this.createKen();
     }
 
 
