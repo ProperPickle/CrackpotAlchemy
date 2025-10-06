@@ -10,6 +10,8 @@ function addControllables(){
     let prevCamPos: Phaser.Math.Vector2;
     let lastPhysicalMouse: Phaser.Math.Vector2;
 
+    let beamPosition: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+
 
     Game.prototype.loadItems = function(){
         for(let key of Object.keys(itemKeys)){                
@@ -70,8 +72,10 @@ function addControllables(){
     Game.prototype.createItem = function(x, y, key): Item {
         let item = Item.createFromKey(this, x, y, key)
         item.sprite.scale *= .8
-        if(key.substr(key.length - 3)=="pot")
+        if(key.substr(key.length - 3)=="pot") {
             item.sprite.scale*=1.8
+            item.body.setSize(item.body.width*.6,item.body.height*.6)
+        }
 
         item.sprite.setBounce(0.2)
         item.sprite.setCollideWorldBounds(true)
@@ -193,7 +197,7 @@ function addControllables(){
         //adding decor from object layer
         const decorLayer = this.myMap.getObjectLayer('decor');
         if(decorLayer && decorLayer.objects) {
-            decorLayer.objects.forEach((obj, idx) => {
+            decorLayer.objects.forEach((obj) => {
                 const x = (obj.x ?? 0) + (obj.width ?? 0)/2;
                 const y = (obj.y ?? 0) - (obj.height ?? 0)/2;
                 console.log(obj.name);
@@ -226,9 +230,9 @@ function addControllables(){
             return;
         }
         beam.setActive(true).setVisible(true);
-        const mouse = this.input.mousePointer;
-        let mx = mouse.worldX;
-        let my = mouse.worldY;
+        //const mouse = this.input.mousePointer;
+        let mx = beamPosition.x//mouse.worldX;
+        let my = beamPosition.y//mouse.worldY;
         let px = this.player.getWorldPoint().x
         let py = this.player.getWorldPoint().y
         let rx = mx-px;
@@ -300,6 +304,8 @@ function addControllables(){
 
             if (!this.cartIsHeld) {
 
+                beamPosition = clampedMousePos
+
             // Loop all items to check for clicks
             for (let item of this.items) {
                 if (!item.sprite.active) { item.isHeld = false; item.body.setVelocity(0) }
@@ -315,6 +321,16 @@ function addControllables(){
                         }
                 }
             }
+            } else {
+
+                beamPosition = this.cart.body.position.clone().add(
+                    new Phaser.Math.Vector2(this.cart.body.halfWidth,this.cart.body.halfHeight))
+
+                this.items.forEach((item) => { 
+                if (item.isHeld) 
+                item.isHeld = false
+                item.isThrown = true
+             } )
             }
         } else {
             this.items.forEach((item) => { 
@@ -322,6 +338,8 @@ function addControllables(){
                 item.isHeld = false
                 item.isThrown = true
              } )
+
+             beamOn = false
         }
         
         // Move currently dragged objects
@@ -331,6 +349,9 @@ function addControllables(){
             //if (item.body == null) continue
 
             if (item.isHeld) {
+
+                beamPosition = item.body.position.clone().add(new Phaser.Math.Vector2(item.body.halfWidth,item.body.halfHeight))
+
                 let toTarget = clampedMousePos.clone().subtract(item.sprite.getCenter());
                 const maxSpeed = 3000;
                 const distance = toTarget.length();
