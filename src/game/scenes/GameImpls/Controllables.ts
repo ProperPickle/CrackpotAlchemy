@@ -33,7 +33,7 @@ function addControllables(){
     Game.prototype.createKen = function(){
         this.amy = this.physics.add.sprite(650, 540, 'Ken')//.setScale(.1)
 
-        this.writeDialogue(this.amy, ["Amy", "Amy", "Ron"],
+        this.writeDialogue(this.amy, ["Amy", "Amy", "Amy", "Ron"],
              ["Hey",
             "You hit your head really hard yesteday.\nAre you okay?",
              "You shoulds sit down", 
